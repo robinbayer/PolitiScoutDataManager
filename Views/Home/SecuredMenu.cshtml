@@ -1,0 +1,115 @@
+﻿@model Overthink.PolitiScout.Models.SecuredMenuPageAppParameters
+
+@{
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DevCX Customer Name Refinery</title>
+    <link href="~/Styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Styles/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/Styles/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Styles/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/Styles/jquery-ui.theme.min.css" rel="stylesheet" />
+    <script src="~/Source/jquery-1.11.2.min.js"></script>
+    <script src="~/Source/jquery-ui.min.js"></script>
+    <script src="~/Source/jquery.ui.widget.js"></script>
+    <script src="~/Source/bootstrap.min.js"></script>
+    <script src="~/Source/securedMenu.js?systemVersion=@Model.SystemVersion"></script>
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <h1>DevCX Customer Name Refinery</h1>
+
+        <input id="baseWebServiceUrl" type="hidden" value="@Model.BaseUrl" />
+        <input id="systemVersion" type="hidden" value="@Model.SystemVersion" />
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <h2>Actions</h2>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <button type="button" id="affiliatedSalesResourceLookup" class="btn btn-primary">Affliated Sales Resource Lookup for Customer</button>
+            </div>
+        </div>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        @{
+
+            if (Model.ShowMenuOptionMaintainMasterSubordinateCustomerMenuItem)
+            {
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button type="button" id="maintainMasterSubordinateCustomerList" class="btn btn-warning">Maintain Master/Subordinate Customer List</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+            }
+        }
+
+
+        @{
+            if (Model.ShowMenuOptionSubordinateExistingCustomerMenuItem)
+            {
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button type="button" id="subordinateExistingCustomer" class="btn btn-warning">Subordinate Existing Customer</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+            }
+        }
+
+        @{
+            if (Model.ShowMenuOptionRemapToDifferentCorporateEndCustomer)
+            {
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button type="button" id="remapToDifferentCorporateEndCustomer" class="btn btn-warning">Remap to Different End Customer</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+            }
+        }
+
+
+        <div class="row">
+            <div class="col-lg-4">
+                <button type="button" id="signOut" class="btn btn-dark">Sign Out</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

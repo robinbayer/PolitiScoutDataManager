@@ -1,0 +1,45 @@
+﻿@model Overthink.PolitiScout.Models.SinglePageAppParameters
+
+@{
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DevCX Name Refinery</title>
+    <link href="~/Styles/cisco-sans.min.css" rel="stylesheet" />
+    <link href="~/Styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Styles/signOn.css?systemVersion=@Model.SystemVersion" rel="stylesheet" />
+    <script src="~/Source/jquery-3.5.1.min.js"></script>
+    <script src="~/Source/bootstrap.min.js"></script>
+    <script src="~/Source/signOn.js?systemVersion=@Model.SystemVersion"></script>
+</head>
+<body>
+
+    <input id="baseWebServiceUrl" type="hidden" value="@Model.BaseUrl" />
+    <input id="systemVersion" type="hidden" value="@Model.SystemVersion" />
+
+    <div class="container-fluid">
+
+        <h1>DevCX Name Refinery</h1>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="alert alert-info" role="alert">
+                    <p>You will be directed to the Cisco Single Sign-On page to access this utility.</p>
+                    <p>If you have not yet requested access to this application please send a request to <a href="mailto:devcx-name-refinery-support">devcx-name-refinery-support@cisco.com</a> in order to be granted access.</p>
+                </div>
+                <button id="redirectToSSO">Go to Single Sign-On</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

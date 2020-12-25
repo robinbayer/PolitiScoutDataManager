@@ -1,0 +1,38 @@
+﻿@model Overthink.PolitiScout.Models.SecuredMenuPageAppParameters
+
+@{
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DevCX Name Refinery - Not Authorized</title>
+    <link href="~/Styles/cisco-sans.min.css" rel="stylesheet" />
+    <link href="~/Styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Styles/bootstrap-theme.min.css" rel="stylesheet" />
+    <script src="~/Source/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="alert alert-warning" role="alert">
+                    You have not been granted authorization to the DevCX Name Refinery.  Please send an e-mail message to <a href="mailto:devcx-name-refinery-support@cisco.com">devcx-name-refinery-support@cisco.com</a> to be granted authorization.
+                </div>
+            </div>
+        </div>
+
+        <input id="baseWebServiceUrl" type="hidden" value="@Model.BaseUrl" />
+        <input id="systemVersion" type="hidden" value="@Model.SystemVersion" />
+    </div>
+
+</body>
+</html>

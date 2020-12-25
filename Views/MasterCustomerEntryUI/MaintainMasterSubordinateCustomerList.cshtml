@@ -1,0 +1,219 @@
+﻿@model Overthink.PolitiScout.Models.SinglePageAppParameters
+
+@{
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Map Customers to Corporate Customers/Sales Levels</title>
+    <link href="~/Styles/cisco-sans.min.css" rel="stylesheet" />
+    <link href="~/Styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Styles/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/Styles/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Styles/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/Styles/jquery-ui.theme.min.css" rel="stylesheet" />
+    <link href="~/Styles/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/Styles/jsTree-default/style.css" rel="stylesheet" />
+    <link href="~/Styles/masterCustomerEntry.css?systemVersion=@Model.SystemVersion" rel="stylesheet" />
+    <script src="~/Source/jquery-1.11.2.min.js"></script>
+    <script src="~/Source/jquery-ui.min.js"></script>
+    <script src="~/Source/jquery.ui.widget.js"></script>
+    <script src="~/Source/jquery.jqGrid.min.js"></script>
+    <script src="~/Source/grid.locale-en.js"></script>
+    <script src="~/Source/jstree.min.js"></script>
+    <script src="~/Source/bootstrap.min.js"></script>
+    <script src="~/Source/masterCustomerEntry.js?systemVersion=@Model.SystemVersion"></script>
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <h1>Map Customers to Corporate Customers/Sales Levels</h1>
+
+        <input id="baseWebServiceUrl" type="hidden" value="@Model.BaseUrl" />
+        <input id="systemVersion" type="hidden" value="@Model.SystemVersion" />
+        <input id="selectedUnprocessedCustomerEntryId" type="hidden" />
+        <input id="selectedMasterCustomerEntryId" type="hidden" />
+        <input id="selectedEndCustomerId" type="hidden" />
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <label for="workProcessingQueue">Work Processing Queue</label>
+            </div>
+            <div class="col-lg-5">
+                <select id="workProcessingQueue"></select>
+            </div>
+        </div>
+
+        <div class="alert alert-danger" role="alert" id="errorMessageBlock">
+            <span id="errorMessageText"></span>
+        </div>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Unprocessed Customer Entries</h2>
+
+                <div class="row">
+                    <table id="unprocessedList" class="scroll"></table><br />
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-3">
+                        <button type="button" id="markProcessed" class="btn btn-sm btn-info">Mark as Processed</button>
+                    </div>
+                    <div class="col-lg-3">
+                        <button type="button" id="moveToHoldQueue" class="btn btn-sm btn-info">Move to Hold Queue</button>
+                    </div>
+                    <div class="col-lg-6 alert-light">
+                        <label>Account Manager CEC ID</label>
+                        <span id="accountManagerCEC_ID"></span>
+                        <button class="btn btn-light" id="accountManagerInformation">...</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-5">
+                <h3>Previously-Tagged Master Customer Entries</h3>
+
+                <input id="masterCustomerSearchMask" placeholder="Enter search text here" />&nbsp;
+                <button type="button" id="searchForMasterCustomer" class="btn btn-sm btn-info">Search for Master Customer</button>
+                <br /><br />
+
+                <div class="row">
+                    <table id="masterCustomerList" class="scroll"></table><br />
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+                <button type="button" id="subordinateToMasterCustomer" class="btn btn-sm btn-info">Make Unprocessed Customer Subordinate</button>
+            </div>
+        </div>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <h2>Search for Corporate Customer to assign to selected record</h2>
+
+        <div class="row">
+            <div class="col-lg-5">
+                <input id="endCustomerSearchMask" placeholder="Enter search text here" />
+                &nbsp;
+                <button type="button" id="searchForEndCustomer" class="btn btn-sm btn-info">Search</button>
+                &nbsp;
+                <input id="endCustomerOnlyFromBeginningOfName" type="checkbox"> Search from beginning of name
+            </div>
+        </div>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <h2>Matching Corporate End Customers</h2>
+
+        <div class="row">
+            <table id="endCustomerList" class="scroll"></table>
+        </div>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <button type="button" class="btn btn-success" id="assignNameAndSalesLevels">Assign Selected End Customer/Sales Levels to Master Customer Entry</button>
+            </div>
+        </div>
+
+        <div class="row">
+            &nbsp;
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">Awaiting Processing: <span id="readyToProcess"></span></div>
+            <div class="col-lg-2">Processed: <span id="processed"></span></div>
+            <div class="col-lg-2">Subordinated: <span id="subordinated"></span></div>
+            <div class="col-lg-2">Placed on Hold: <span id="placedOnHold"></span></div>
+        </div>
+
+        <div class="modal fade" id="accountManagerModal" tabindex="-1" role="dialog" aria-labelledby="accountManagerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accountManagerModalLabel">Account Manager Information</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="employeeName">Employee Name</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <span id="employeeName"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="employeeName">Employee CEC ID</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <span id="employeeCEC_ID"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="departmentName">Department Name</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <span id="departmentName"></span>
+                            </div>
+                        </div>
+
+                        <h2>Supervisors</h2>
+                        <div id="supervisorTree">&nbsp;</div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <table id="affiliatedCustomerList" class="scroll"></table><br />
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="okOnAccountManagerModal" class="btn btn-primary">OK</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
