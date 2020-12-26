@@ -9,8 +9,6 @@ $(function () {
     $("#editPerson").attr("disabled", "disabled");
     $("#deletePerson").attr("disabled", "disabled");
 
-    personSearchResultGridUrl = $("#baseWebServiceUrl").val() + "/ws/person/search/";
-
     $("#personSearchResultGrid").jqGrid({
         url: personSearchResultGridUrl,
         type: 'GET',
@@ -22,14 +20,14 @@ $(function () {
             cach: false
         },
         postData: {
-            lastNameSearchMask: function () {
-                return $("#lastNameSearchMask").val() + WILDCARD_ALL_TOKEN;
+            'lastNameSearchMask': function () {
+                return "";
             },
-            firstNameSearchMask: function () {
-                return $("#firstNameSearchMask").val() + WILDCARD_ALL_TOKEN;
+            'firstNameSearchMask': function () {
+                return "";
             },
-            preferredFirstNameSearchMask: function () {
-                return $("#preferredFirstNameSearchMask").val() + WILDCARD_ALL_TOKEN;
+            'preferredFirstNameSearchMask': function () {
+                return "";
             },
         },
         datatype: "json",
@@ -152,58 +150,19 @@ $(function () {
     //    }
     //}); 
 
-
-
     $("#searchForPerson").click(function () {
+
+        // PROGRAMMER'S NOTE:  value set here to avoid web service call on entry to page
+        personSearchResultGridUrl = $("#baseWebServiceUrl").val() + "/ws/person/search/";
+
+        var gridPostData = $("#personSearchResultGrid").jqGrid("getGridParam", "postData");
+
+        gridPostData.lastNameSearchMask = $("#lastNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
+        gridPostData.firstNameSearchMask = $("#firstNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
+        gridPostData.preferredFirstNameSearchMask = $("#preferredFirstNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
 
         $("#personSearchResultGrid").jqGrid('setGridParam', { url: personSearchResultGridUrl}).trigger("reloadGrid");
 
     });     // $("#searchForPerson").click(function ()
-
-    //$("#mapToSOCustomerWithCRSalesLevels").click(function () {
-
-    //    var salesOrderEndCustomerList = $("#salesOrderEndCustomerList");
-    //    var selectedRowId = salesOrderEndCustomerList.jqGrid("getGridParam", "selrow");
-    //    var rowData = $("#salesOrderEndCustomerList").getRowData(selectedRowId);
-
-    //    var parameterSet = new Object();
-
-    //    parameterSet.masterCustomerEntryId = parseInt($("#selectedUnprocessedCustomerEntryId").val());
-    //    parameterSet.endCustomerId = parseInt(rowData.endCustomerId);
-    //    parameterSet.endCustomerCRPartyId = parseInt(rowData.endCustomerCRPartyId);
-    //    parameterSet.endCustomerHeadquartersName = rowData.endCustomerHeadquartersName;
-    //    parameterSet.salesLevel1 = $("#cssotAPI_SOSalesLevel1").val();
-    //    parameterSet.salesLevel2 = $("#cssotAPI_SOSalesLevel2").val();
-    //    parameterSet.salesLevel3 = $("#cssotAPI_SOSalesLevel3").val();
-    //    parameterSet.saleslevel4 = $("#cssotAPI_SOSalesLevel4").val();
-
-    //    processFromCustomerSalesLevelParameterSetUrl = $("#baseWebServiceUrl").val() + "/ws/masterCustomer/AssignNameAndSalesLevelsFromParameterSet/";
-
-    //    $.ajax({
-    //        type: "PUT",
-    //        url: processFromCustomerSalesLevelParameterSetUrl,
-    //        traditional: true,
-    //        data: JSON.stringify(parameterSet),
-    //        contentType: "application/json; charset=utf-8",
-    //        dataType: "json",
-    //        success: function (returnValue) {
-
-    //            salesOrderEndCustomerGridUrl = $("#baseWebServiceUrl").val() + "/ws/masterCustomerEntry/endCustomerMappingForSalesOrders/-1/";
-    //            $("#salesOrderEndCustomerList").jqGrid('setGridParam', { url: salesOrderEndCustomerGridUrl }).trigger("reloadGrid");
-
-    //            $("#mapToSalesOrderCustomer").attr("disabled", "disabled");
-    //            $("#mapToSOCustomerWithCRSalesLevels").attr("disabled", "disabled");
-
-    //            $("#unprocessedList").jqGrid().trigger("reloadGrid");
-
-    //        },
-    //        error: function (e) {
-
-    //            // PROGRAMMER'S NOTE:  Need to handle case of error encountered during AJAX call
-
-    //        }
-    //    });     // .ajax()
-
-    //});         // $("#mapToSOCustomerWithCRSalesLevels").click()
 
 });     // // document.ready()

@@ -135,8 +135,8 @@ namespace Overthink.PolitiScout.Controllers
                     sqlStatement = new System.Text.StringBuilder();
                     sqlStatement.Append("SELECT p.person_id, p.last_name, p.first_name, p.middle_name, p.generation_suffix, p.preferred_first_name, p.date_of_birth ");
                     sqlStatement.Append("  FROM person p ");
-                    sqlStatement.Append("  WHERE p.last_name LIKE @last_name_search_mask AND p.first_name LIKE @first_name_search_mask AND ");
-                    sqlStatement.Append("        p.preferred_first_name LIKE @preferred_first_name_search_mask ");
+                    sqlStatement.Append("  WHERE UPPER(p.last_name) LIKE UPPER(@last_name_search_mask) AND UPPER(p.first_name) LIKE UPPER(@first_name_search_mask) AND ");
+                    sqlStatement.Append("        UPPER(p.preferred_first_name) LIKE UPPER(@preferred_first_name_search_mask) ");
                     sqlStatement.Append("  ORDER BY p.last_name, p.first_name, p.preferred_first_name ");
                     sqlStatement.Append("  LIMIT @return_limit ");
 
@@ -169,10 +169,26 @@ namespace Overthink.PolitiScout.Controllers
                             person.personId = sqlDataReaderSearchPerson.GetInt32(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PERSON_ID);
                             person.lastName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_LAST_NAME);
                             person.firstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_FIRST_NAME);
-                            person.middleName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
-                            person.generationSuffix = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
-                            person.preferredFirstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
-                            person.dateOfBirth = sqlDataReaderSearchPerson.GetDateTime(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
+
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME))
+                            {
+                                person.middleName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
+                            }
+
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX))
+                            {
+                                person.generationSuffix = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
+                            }
+
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME))
+                            {
+                                person.preferredFirstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
+                            }
+
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH))
+                            {
+                                person.dateOfBirth = sqlDataReaderSearchPerson.GetDateTime(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
+                            }
 
                             returnValue.Add(person);
 
