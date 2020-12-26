@@ -31,7 +31,7 @@ namespace Overthink.PolitiScout.Controllers
 
         [Route("person/{personId}/")]
         [HttpGet]
-        public async Task<ActionResult<Models.Person>> AddPerson(int personId)
+        public async Task<ActionResult<Models.Person>> GetPerson(int personId)
         {
 
             System.Text.StringBuilder sqlStatement;
@@ -89,7 +89,7 @@ namespace Overthink.PolitiScout.Controllers
             }
             catch (Exception ex1)
             {
-                logger.LogError(string.Format("Unhandled exception occurred in PersonWSController::AddPerson().  Message is {0}", ex1.Message));
+                logger.LogError(string.Format("Unhandled exception occurred in PersonWSController::GetPerson().  Message is {0}", ex1.Message));
 
                 if (ex1.InnerException != null)
                 {
@@ -107,14 +107,107 @@ namespace Overthink.PolitiScout.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
             }
 
-        }       // AddPerson()
+        }       // GetPerson()
 
+        [Route("person/search/")]
+        [HttpPost]      // RJB 2020-12-26  Considered incorrect to have data in body of GET method 
+        public async Task<ActionResult<List<Models.Person>>> SearchPerson([FromBody]Models.PersonSearchParameterSet personSearchParamterSet)
+        {
 
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
 
-        // search by name
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandSearchPerson;
+            NpgsqlDataReader sqlDataReaderSearchPerson;
 
+            try
+            {
 
+                List<Models.Person> returnValue = new List<Models.Person>();
 
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("SELECT p.person_id, p.last_name, p.first_name, p.middle_name, p.generation_suffix, p.preferred_first_name, p.date_of_birth ");
+                    sqlStatement.Append("  FROM person p ");
+                    sqlStatement.Append("  WHERE p.last_name LIKE @last_name_search_mask AND p.first_name LIKE @first_name_search_mask AND ");
+                    sqlStatement.Append("        p.preferred_first_name LIKE @preferred_first_name_search_mask ");
+                    sqlStatement.Append("  ORDER BY p.last_name, p.first_name, p.preferred_first_name ");
+                    sqlStatement.Append("  LIMIT @return_limit ");
+
+                    sqlCommandSearchPerson = sqlConnection.CreateCommand();
+                    sqlCommandSearchPerson.CommandText = sqlStatement.ToString();
+                    sqlCommandSearchPerson.CommandTimeout = 600;
+                    sqlCommandSearchPerson.Parameters.Add(new NpgsqlParameter("@last_name_search_mask", NpgsqlTypes.NpgsqlDbType.Varchar, 50));
+                    sqlCommandSearchPerson.Parameters.Add(new NpgsqlParameter("@first_name_search_mask", NpgsqlTypes.NpgsqlDbType.Varchar, 50));
+                    sqlCommandSearchPerson.Parameters.Add(new NpgsqlParameter("@preferred_first_name_search_mask", NpgsqlTypes.NpgsqlDbType.Varchar, 50));
+                    sqlCommandSearchPerson.Parameters.Add(new NpgsqlParameter("@return_limit", NpgsqlTypes.NpgsqlDbType.Integer));
+
+                    sqlCommandSearchPerson.Parameters["@last_name_search_mask"].Value = "";
+                    sqlCommandSearchPerson.Parameters["@first_name_search_mask"].Value = "";
+                    sqlCommandSearchPerson.Parameters["@preferred_first_name_search_mask"].Value = "";
+                    sqlCommandSearchPerson.Parameters["@return_limit"].Value = 0;
+                    await sqlCommandSearchPerson.PrepareAsync();
+
+                    sqlCommandSearchPerson.Parameters["@last_name_search_mask"].Value = personSearchParamterSet.lastNameSearchMask;
+                    sqlCommandSearchPerson.Parameters["@first_name_search_mask"].Value = personSearchParamterSet.firstNameSearchMask;
+                    sqlCommandSearchPerson.Parameters["@preferred_first_name_search_mask"].Value = personSearchParamterSet.preferredFirstNameSearchMask;
+                    sqlCommandSearchPerson.Parameters["@return_limit"].Value = int.Parse(configuration["AppSettings:SearchReturnLimit"]);
+
+                    using (sqlDataReaderSearchPerson = await sqlCommandSearchPerson.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
+                    {
+                        while (await sqlDataReaderSearchPerson.ReadAsync())
+                        {
+
+                            Models.Person person = new Models.Person();
+
+                            person.personId = sqlDataReaderSearchPerson.GetInt32(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PERSON_ID);
+                            person.lastName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_LAST_NAME);
+                            person.firstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_FIRST_NAME);
+                            person.middleName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
+                            person.generationSuffix = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
+                            person.preferredFirstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
+                            person.dateOfBirth = sqlDataReaderSearchPerson.GetDateTime(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
+
+                            returnValue.Add(person);
+
+                        };
+
+                        await sqlDataReaderSearchPerson.CloseAsync();
+                    };
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in PersonWSController::GetPerson().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // GetPerson()
 
         [Route("person")]
         [HttpPost]

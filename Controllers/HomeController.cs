@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Data.SqlClient;
 
 namespace Overthink.PolitiScout.Controllers
 {
@@ -46,17 +45,14 @@ namespace Overthink.PolitiScout.Controllers
         }
 
         [Route("/redirectToSSO")]
-        [Authorize]
+
+#if (!DEBUG) 
+        //[Authorize]
+#endif
+
         public IActionResult SecuredAfterRedirect()
         {
 
-            SqlConnection sqlConnection = null;
-            System.Text.StringBuilder sqlStatement;
-            SqlCommand sqlCommandGetSystemRoleMapping;
-            SqlDataReader sqlDataReaderGetSystemRoleMapping;
-            SqlCommand sqlCommandGetMenuOption;
-            SqlDataReader sqlDataReaderGetMenuOption;
-            SqlCommand sqlCommandInsertSystemSession;
 
             string systemSessionExternalKey;
             bool userAuthorized = false;
@@ -64,7 +60,9 @@ namespace Overthink.PolitiScout.Controllers
 
             securedMenuPageAppParameters = new Models.SecuredMenuPageAppParameters($"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}",
                                                                                    configuration["AppSettings:SystemVersion"], configuration["AppSettings:DeployedEnvironmentName"], null, null);
+#if (!DEBUG)
 
+/*
             var claimUserId = User.Claims.Where(c => c.Type == "sub").Single();
 
             try
@@ -271,16 +269,25 @@ namespace Overthink.PolitiScout.Controllers
                         sqlDataReaderGetSystemRoleMapping.Close();
 
                         sqlConnection.Close();
+*/
+#endif
 
-                        if (userAuthorized)
-                        {
-                            return View("SecuredMenu", securedMenuPageAppParameters);
-                        }
-                        else
-                        {
-                            return View("NotAuthorized", securedMenuPageAppParameters);
-                        }
-                    }       // using (sqlConnection = new SqlConnection(this._configuration["ConnectionStrings:DevCXMain"]))
+#if (DEBUG)
+            userAuthorized = true;
+#endif
+
+            if (userAuthorized)
+            {
+                return View("SecuredMenu", securedMenuPageAppParameters);
+            }
+            else
+            {
+                return View("NotAuthorized", securedMenuPageAppParameters);
+            }
+
+#if (!DEBUG)
+ /*     
+        }       // using (sqlConnection = new SqlConnection(this._configuration["ConnectionStrings:DevCXMain"]))
 
                 }
                 else
@@ -298,6 +305,8 @@ namespace Overthink.PolitiScout.Controllers
                 return View("ErrorOccured", securedMenuPageAppParameters);
 
             }
+*/
+#endif
 
         }       // SecuredAfterRedirect()
 
