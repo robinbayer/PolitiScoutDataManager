@@ -37,6 +37,7 @@
 
         <input id="baseWebServiceUrl" type="hidden" value="@Model.BaseUrl" />
         <input id="systemVersion" type="hidden" value="@Model.SystemVersion" />
+        <input id="screenMode" type="hidden" />
         <input id="selectedPersonId" type="hidden" />
 
         <div class="row">
@@ -69,7 +70,7 @@
                     <div class="col-lg-2">
                         <input id="firstNameSearchMask" />
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-1">
                         <label for="preferredFirstNameSearchMask">Preferred First Name</label>
                     </div>
                     <div class="col-lg-3">
@@ -97,10 +98,10 @@
                     <div class="col-lg-1">
                         <button type="button" id="addPerson" class="btn btn-sm btn-info">Add Person</button>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-1">
                         <button type="button" id="editPerson" class="btn btn-sm btn-info">Edit Person</button>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-1">
                         <button type="button" id="deletePerson" class="btn btn-sm btn-info">Delete Person</button>
                     </div>
                 </div>
@@ -124,8 +125,12 @@
                                 <label for="lastName">Last Name</label>
                             </div>
                             <div class="col-sm-9">
-                                <input id="lastName" />
+                                <input class="form-control" id="lastName" />
                             </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
                         </div>
 
                         <div class="row">
@@ -133,8 +138,12 @@
                                 <label for="firstName">First Name</label>
                             </div>
                             <div class="col-sm-9">
-                                <input id="firstName" />
+                                <input class="form-control" id="firstName" />
                             </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
                         </div>
 
                         <div class="row">
@@ -142,8 +151,12 @@
                                 <label for="middleName">Middle Name</label>
                             </div>
                             <div class="col-sm-9">
-                                <input id="middleName" />
+                                <input class="form-control" id="middleName" />
                             </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
                         </div>
 
                         <div class="row">
@@ -151,8 +164,12 @@
                                 <label for="generationSuffix">Generation/Suffix</label>
                             </div>
                             <div class="col-sm-9">
-                                <input id="generationSuffix" />
+                                <input class="form-control" id="generationSuffix" />
                             </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
                         </div>
 
                         <div class="row">
@@ -160,8 +177,29 @@
                                 <label for="preferredFirstName">Preferred First Name</label>
                             </div>
                             <div class="col-sm-9">
-                                <input id="preferredFirstName" />
+                                <input class="form-control" id="preferredFirstName" />
                             </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="preferredFirstName">Date of Birth</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="date" id="dateOfBirth">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock">
+                            <span id="dialogErrorMessageText"></span>
                         </div>
 
                     </div>
@@ -172,6 +210,29 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="confirmDeletePersonModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeletePersonLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeletePersonModalLabel">Delete Person</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" role="alert">
+                            <p>Please confirm you want to delete this Person record.  This action CANNOT be undone.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="onDialogDelete" class="btn btn-default" data-dismiss="modal">Delete</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 

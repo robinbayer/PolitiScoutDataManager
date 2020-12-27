@@ -1,11 +1,15 @@
 ﻿var personSearchResultGridUrl;
 
+const SCREEN_MODE_ADD = "Add";
+const SCREEN_MODE_EDIT = "Edit";
+
 const WILDCARD_ALL_TOKEN = "%";
 const ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS = 5000;
 
 $(function () {
 
     $("#errorMessageBlock").hide();
+    $("#dialogErrorMessageBlock").hide();
     $("#editPerson").attr("disabled", "disabled");
     $("#deletePerson").attr("disabled", "disabled");
 
@@ -138,17 +142,63 @@ $(function () {
 
     $("#okOnAddEditPersonModal").click(function () {
 
+        // Perform validations
+        $("#dialogErrorMessageBlock").hide();
+
+        if ($("#lastName").val() == "") {
+
+        }
+
+        if ($("#firstName").val() == "") {
+
+        }
+
+        if ($("#preferredFirstName").val() == "") {
+
+        }
+
+
+        if ($("#screenMode").val() == SCREEN_MODE_ADD) {
+
+
+
+        } else {
+            // Edit mode
+
+        }
+
+
+        var gridPostData = $("#personSearchResultGrid").jqGrid("getGridParam", "postData");
+
+        gridPostData.lastNameSearchMask = $("#lastNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
+        gridPostData.firstNameSearchMask = $("#firstNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
+        gridPostData.preferredFirstNameSearchMask = $("#preferredFirstNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
+
+        $("#personSearchResultGrid").jqGrid('setGridParam', { url: personSearchResultGridUrl }).trigger("reloadGrid");
+
+
+
         $("#addEditPersonModal").modal("hide");
 
     });
 
+    $("#lastNameSearchMask").keypress(function (event) {
+        if (event.keyCode === 13) {
+            $("#searchForPseron").click();
+        }
+    }); 
 
+    $("#firstNameSearchMask").keypress(function (event) {
+        if (event.keyCode === 13) {
+            $("#searchForPseron").click();
+        }
+    }); 
 
-    //$("#masterCustomerSearchMask").keypress(function (event) {
-    //    if (event.keyCode === 13) {
-    //        $("#searchForMasterCustomer").click();
-    //    }
-    //}); 
+    $("#preferredFirstNameSearchMask").keypress(function (event) {
+        if (event.keyCode === 13) {
+            $("#searchForPseron").click();
+        }
+    }); 
 
     $("#searchForPerson").click(function () {
 
@@ -163,6 +213,51 @@ $(function () {
 
         $("#personSearchResultGrid").jqGrid('setGridParam', { url: personSearchResultGridUrl}).trigger("reloadGrid");
 
-    });     // $("#searchForPerson").click(function ()
+    });     // $("#searchForPerson").click()
+
+    $("#addPerson").click(function () {
+
+        $("#screenMode").val(SCREEN_MODE_ADD);
+        $("#addEditPersonModalLabel").text(SCREEN_MODE_ADD + " Person record");
+
+        $("#addEditPersonModal").modal("show");
+
+    });     // $("#addPerson").click()
+
+    $("#editPerson").click(function () {
+
+        $("#screenMode").val(SCREEN_MODE_EDIT);
+        $("#addEditPersonModalLabel").text(SCREEN_MODE_EDIT + " Person record");
+
+        // Load existing values from database
+
+        $("#addEditPersonModal").modal("show");
+
+    });     // $("editPerson").click()
+
+    $("#firstName").focusout(function () {
+        if ($("#screenMode").val() == SCREEN_MODE_ADD) {
+            if ($("#preferredFirstName").val() == "") {
+                $("#preferredFirstName").val($("#firstName").val());
+            }
+        }
+    })
+
+    $("#addEditPersonModal").on("shown.bs.modal", function () {
+        $("#lastName").focus();
+    })
+
+    $("#deletePerson").click(function () {
+        $("#confirmDeletePersonModal").modal("show");
+    });     // $("#deletePerson").click()
+
+
+    $("#onDialogDelete").click(function () {
+
+
+    });     // $("#onDialogDelete").click()
+
+
+
 
 });     // // document.ready()
