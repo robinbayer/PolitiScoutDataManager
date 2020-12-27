@@ -72,10 +72,24 @@ namespace Overthink.PolitiScout.Controllers
                             returnValue.personId = personId;
                             returnValue.lastName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_LAST_NAME);
                             returnValue.firstName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_FIRST_NAME);
-                            returnValue.middleName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
-                            returnValue.generationSuffix = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
+
+                            if (!await sqlDataReaderGetPerson.IsDBNullAsync(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME))
+                            {
+                                returnValue.middleName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
+                            }
+
+                            if (!await sqlDataReaderGetPerson.IsDBNullAsync(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX))
+                            {
+                                returnValue.generationSuffix = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
+                            }
+
                             returnValue.preferredFirstName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
-                            returnValue.dateOfBirth = sqlDataReaderGetPerson.GetDateTime(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
+
+                            if (!await sqlDataReaderGetPerson.IsDBNullAsync(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH))
+                            {
+                                returnValue.dateOfBirth = sqlDataReaderGetPerson.GetDateTime(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
+                            }
+
                         };
 
                         await sqlDataReaderGetPerson.CloseAsync();
@@ -266,12 +280,48 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandInsertPerson.Parameters.Add(new NpgsqlParameter("@record_added_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
                     sqlCommandInsertPerson.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
 
+                    sqlCommandInsertPerson.Parameters["@last_name"].Value = "";
+                    sqlCommandInsertPerson.Parameters["@first_name"].Value = "";
+                    sqlCommandInsertPerson.Parameters["@middle_name"].Value = "";
+                    sqlCommandInsertPerson.Parameters["@generation_suffix"].Value = "";
+                    sqlCommandInsertPerson.Parameters["@preferred_first_name"].Value = "";
+                    sqlCommandInsertPerson.Parameters["@date_of_birth"].Value = DateTime.MinValue;
+                    sqlCommandInsertPerson.Parameters["@record_added_date_time"].Value = DateTime.MinValue;
+                    sqlCommandInsertPerson.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
+                    await sqlCommandInsertPerson.PrepareAsync();
+
                     sqlCommandInsertPerson.Parameters["@last_name"].Value = person.lastName;
                     sqlCommandInsertPerson.Parameters["@first_name"].Value = person.firstName;
-                    sqlCommandInsertPerson.Parameters["@middle_name"].Value = person.middleName;
-                    sqlCommandInsertPerson.Parameters["@generation_suffix"].Value = person.generationSuffix;
+
+                    if (person.middleName == null)
+                    {
+                        sqlCommandInsertPerson.Parameters["@middle_name"].Value = System.DBNull.Value;
+                    } 
+                    else
+                    {
+                        sqlCommandInsertPerson.Parameters["@middle_name"].Value = person.middleName;
+                    }
+
+                    if (person.generationSuffix == null)
+                    {
+                        sqlCommandInsertPerson.Parameters["@generation_suffix"].Value = System.DBNull.Value;
+                    } 
+                    else
+                    {
+                        sqlCommandInsertPerson.Parameters["@generation_suffix"].Value = person.generationSuffix;
+                    }
+
                     sqlCommandInsertPerson.Parameters["@preferred_first_name"].Value = person.preferredFirstName;
-                    sqlCommandInsertPerson.Parameters["@date_of_birth"].Value = person.dateOfBirth;
+
+                    if (person.dateOfBirth == DateTime.MinValue)
+                    {
+                        sqlCommandInsertPerson.Parameters["@date_of_birth"].Value = System.DBNull.Value;
+                    } 
+                    else
+                    {
+                        sqlCommandInsertPerson.Parameters["@date_of_birth"].Value = person.dateOfBirth;
+                    }
+
                     sqlCommandInsertPerson.Parameters["@record_added_date_time"].Value = DateTime.MinValue;
                     sqlCommandInsertPerson.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
 
@@ -344,7 +394,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlStatement.Append("UPDATE person ");
                     sqlStatement.Append("  SET last_name = @last_name, first_name = @first_name, middle_name = @middle_name, generation_suffix = @generation_suffix, ");
                     sqlStatement.Append("      preferred_first_name = @preferred_first_name, date_of_birth = @date_of_birth, ");
-                    sqlStatement.Append("      record_last_updated_date_time = @record_last_updated_date_time) ");
+                    sqlStatement.Append("      record_last_updated_date_time = @record_last_updated_date_time ");
                     sqlStatement.Append("  WHERE person_id = @person_id ");
 
                     sqlCommandUpdatePerson = sqlConnection.CreateCommand();
@@ -359,12 +409,48 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandUpdatePerson.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
                     sqlCommandUpdatePerson.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
 
+                    sqlCommandUpdatePerson.Parameters["@last_name"].Value = "";
+                    sqlCommandUpdatePerson.Parameters["@first_name"].Value = "";
+                    sqlCommandUpdatePerson.Parameters["@middle_name"].Value = "";
+                    sqlCommandUpdatePerson.Parameters["@generation_suffix"].Value = "";
+                    sqlCommandUpdatePerson.Parameters["@preferred_first_name"].Value = "";
+                    sqlCommandUpdatePerson.Parameters["@date_of_birth"].Value = DateTime.MinValue;
+                    sqlCommandUpdatePerson.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
+                    sqlCommandUpdatePerson.Parameters["@person_id"].Value = 0;
+                    await sqlCommandUpdatePerson.PrepareAsync();
+
                     sqlCommandUpdatePerson.Parameters["@last_name"].Value = person.lastName;
                     sqlCommandUpdatePerson.Parameters["@first_name"].Value = person.firstName;
-                    sqlCommandUpdatePerson.Parameters["@middle_name"].Value = person.middleName;
-                    sqlCommandUpdatePerson.Parameters["@generation_suffix"].Value = person.generationSuffix;
+
+                    if (person.middleName == null)
+                    {
+                        sqlCommandUpdatePerson.Parameters["@middle_name"].Value = System.DBNull.Value;
+                    } 
+                    else
+                    {
+                        sqlCommandUpdatePerson.Parameters["@middle_name"].Value = person.middleName;
+                    }
+
+                    if (person.generationSuffix == null)
+                    {
+                        sqlCommandUpdatePerson.Parameters["@generation_suffix"].Value = System.DBNull.Value;
+                    } 
+                    else
+                    {
+                        sqlCommandUpdatePerson.Parameters["@generation_suffix"].Value = person.generationSuffix;
+                    }
+
                     sqlCommandUpdatePerson.Parameters["@preferred_first_name"].Value = person.preferredFirstName;
-                    sqlCommandUpdatePerson.Parameters["@date_of_birth"].Value = person.dateOfBirth;
+
+                    if (person.dateOfBirth == System.DateTime.MinValue)
+                    {
+                        sqlCommandUpdatePerson.Parameters["@date_of_birth"].Value = System.DBNull.Value;
+                    }
+                    else
+                    {
+                        sqlCommandUpdatePerson.Parameters["@date_of_birth"].Value = person.dateOfBirth;
+                    }
+
                     sqlCommandUpdatePerson.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
                     sqlCommandUpdatePerson.Parameters["@person_id"].Value = person.personId;
 

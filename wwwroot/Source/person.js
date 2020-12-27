@@ -228,8 +228,10 @@ $(function () {
 
         } else {
 
+            person.personId = parseInt($("#selectedPersonId").val());
+
             // Edit mode
-            var updatePersonInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/" + $("#selectedPersonId").val() + "/";
+            var updatePersonInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/";
 
             $.ajax({
                 type: "PUT",
@@ -317,6 +319,13 @@ $(function () {
         $("#screenMode").val(SCREEN_MODE_ADD);
         $("#addEditPersonModalLabel").text(SCREEN_MODE_ADD + " Person record");
 
+        $("#lastName").val("");
+        $("#firstName").val("");
+        $("#middleName").val("");
+        $("#preferredFirstName").val("");
+        $("#generationSuffix").val("");
+        $("#dateOfBirth").val("");
+
         $("#addEditPersonModal").modal("show");
 
     });     // $("#addPerson").click()
@@ -389,7 +398,7 @@ $(function () {
 
         $.ajax({
             type: "DELETE",
-            url: personInformationUrl,
+            url: deletePersonInformationUrl,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (returnValue) {
