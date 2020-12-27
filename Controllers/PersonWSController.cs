@@ -62,7 +62,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandGetPerson.CommandTimeout = 600;
                     sqlCommandGetPerson.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
 
-                    sqlCommandGetPerson.Parameters["@person_id"].Value = 0;
+                    sqlCommandGetPerson.Parameters["@person_id"].Value = personId;
                     await sqlCommandGetPerson.PrepareAsync();
 
                     using (sqlDataReaderGetPerson = await sqlCommandGetPerson.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
