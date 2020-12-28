@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Newtonsoft.Json;
 using Npgsql;
 
-
 namespace Overthink.PolitiScout.Controllers
 {
     [Route("ws")]
@@ -27,7 +26,6 @@ namespace Overthink.PolitiScout.Controllers
             this.configuration = configuration;
             this.logger = logger;
         }
-
 
         [Route("person/{personId}/")]
         [HttpGet]
@@ -180,28 +178,28 @@ namespace Overthink.PolitiScout.Controllers
 
                             Models.Person person = new Models.Person();
 
-                            person.personId = sqlDataReaderSearchPerson.GetInt32(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PERSON_ID);
-                            person.lastName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_LAST_NAME);
-                            person.firstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_FIRST_NAME);
+                            person.personId = sqlDataReaderSearchPerson.GetInt32(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_PERSON_ID);
+                            person.lastName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_LAST_NAME);
+                            person.firstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_FIRST_NAME);
 
-                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME))
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME))
                             {
-                                person.middleName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
+                                person.middleName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
                             }
 
-                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX))
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX))
                             {
-                                person.generationSuffix = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
+                                person.generationSuffix = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
                             }
 
-                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME))
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME))
                             {
-                                person.preferredFirstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
+                                person.preferredFirstName = sqlDataReaderSearchPerson.GetString(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
                             }
 
-                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH))
+                            if (!await sqlDataReaderSearchPerson.IsDBNullAsync(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH))
                             {
-                                person.dateOfBirth = sqlDataReaderSearchPerson.GetDateTime(ApplicationValues.PERSON_SEARCH_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
+                                person.dateOfBirth = sqlDataReaderSearchPerson.GetDateTime(ApplicationValues.PERSON_LIST_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
                             }
 
                             returnValue.Add(person);
