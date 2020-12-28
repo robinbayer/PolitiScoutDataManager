@@ -15,20 +15,21 @@ namespace Overthink.PolitiScout.Controllers
 {
     [Route("ws")]
     [ApiController]
-    public class ElectionForTerritoryWSController : ControllerBase
+    public class DistinctElectedOfficeForTerritoryWSController : ControllerBase
     {
-        private ILogger<ElectionForTerritoryWSController> logger;
+
+        private ILogger<DistinctElectedOfficeForTerritoryWSController> logger;
         private IConfiguration configuration;
 
-        public ElectionForTerritoryWSController(IConfiguration configuration, ILogger<ElectionForTerritoryWSController> logger)
+        public DistinctElectedOfficeForTerritoryWSController(IConfiguration configuration, ILogger<DistinctElectedOfficeForTerritoryWSController> logger)
         {
             this.configuration = configuration;
             this.logger = logger;
         }
 
-        [Route("electionForTerritory/{electionForTerritoryId}/")]
+        [Route("distinctElectedOfficeForTerritory/{distinctElectedOfficeForTerritoryId}/")]
         [HttpGet]
-        public async Task<ActionResult<Models.ElectionForTerritory>> GetElectionForTerritory(int electionForTerritoryId)
+        public async Task<ActionResult<Models.ElectionForTerritory>> GetDistinctElectedOfficeForTerritory(int distinctElectedOfficeForTerritoryId)
         {
 
             System.Text.StringBuilder sqlStatement;
@@ -41,7 +42,7 @@ namespace Overthink.PolitiScout.Controllers
             try
             {
 
-                Models.ElectionForTerritory returnValue = new Models.ElectionForTerritory();
+                Models.DistinctElectedOfficeForTerritory returnValue = new Models.DistinctElectedOfficeForTerritory();
 
                 processingDateTime = System.DateTime.Now;
 
@@ -50,27 +51,29 @@ namespace Overthink.PolitiScout.Controllers
                     await sqlConnection.OpenAsync();
 
                     sqlStatement = new System.Text.StringBuilder();
-                    sqlStatement.Append("SELECT eft.territory_id, eft.election_date, et.description ");
-                    sqlStatement.Append("  FROM election_for_territory eft inner join election_type et on eft.election_type_id = et.election_type_id ");
-                    sqlStatement.Append("  WHERE eft.election_for_territory_id = @election_for_territory_id ");
+                    sqlStatement.Append("SELECT deot.electedOfficeForTerritoryId, eot.territory_id, deot.distinctive_office_designator, eo.reference_name ");
+                    sqlStatement.Append("  FROM distinct_elected_office_for_territory deot inner join elected_office_for_territory eot on deot.elected_office_for_territory_id = eot.elected_office_for_territory_id ");
+                    sqlStatement.Append("       INNER JOIN elected_office eo on eot.elected_office_id = eo.elected_office_id ");
+                    sqlStatement.Append("  WHERE deot.distinct_elected_office_for_territory_id = @distinct_elected_office_for_territory_id ");
 
                     sqlCommandGetTerritory = sqlConnection.CreateCommand();
                     sqlCommandGetTerritory.CommandText = sqlStatement.ToString();
                     sqlCommandGetTerritory.CommandTimeout = 600;
                     sqlCommandGetTerritory.Parameters.Add(new NpgsqlParameter("@election_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
 
-                    sqlCommandGetTerritory.Parameters["@election_for_territory_id"].Value = 0;
+                    sqlCommandGetTerritory.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
                     await sqlCommandGetTerritory.PrepareAsync();
 
-                    sqlCommandGetTerritory.Parameters["@election_for_territory_id"].Value = electionForTerritoryId;
+                    sqlCommandGetTerritory.Parameters["@distinct_elected_office_for_territory_id"].Value = distinctElectedOfficeForTerritoryId;
                     using (sqlDataReaderGetTerritory = await sqlCommandGetTerritory.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
                     {
                         if (await sqlDataReaderGetTerritory.ReadAsync())
                         {
-                            returnValue.electionForTerritoryId = electionForTerritoryId;
-                            returnValue.territoryId = sqlDataReaderGetTerritory.GetInt32(ApplicationValues.ELECTION_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_ID);
-                            returnValue.electionDate = sqlDataReaderGetTerritory.GetDateTime(ApplicationValues.ELECTION_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_ELECTION_DATE);
-                            returnValue.electionTypeDescription = sqlDataReaderGetTerritory.GetString(ApplicationValues.ELECTION_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_ELECTION_TYPE_DESCRIPTION);
+                            returnValue.distinctElectedOfficeForTerritoryId = distinctElectedOfficeForTerritoryId;
+                            returnValue.electedOfficeForTerritoryId = sqlDataReaderGetTerritory.GetInt32(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_FOR_TERRITORY_ID);
+                            returnValue.distinctOfficeDesignator = sqlDataReaderGetTerritory.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_OFFICE_DEISGNATOR);
+                            returnValue.electedOfficeReferenceName = sqlDataReaderGetTerritory.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_REFERENCE_NAME);
+
                         };
 
                         await sqlDataReaderGetTerritory.CloseAsync();
@@ -84,7 +87,7 @@ namespace Overthink.PolitiScout.Controllers
             }
             catch (Exception ex1)
             {
-                logger.LogError(string.Format("Unhandled exception occurred in ElectionForTerritoryWSController::GetElectionForTerritory().  Message is {0}", ex1.Message));
+                logger.LogError(string.Format("Unhandled exception occurred in DistinctElectedOfficeForTerritoryWSController::GetDistinctElectedOfficeForTerritory().  Message is {0}", ex1.Message));
 
                 if (ex1.InnerException != null)
                 {
@@ -102,11 +105,12 @@ namespace Overthink.PolitiScout.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
             }
 
-        }       // GetElectionForTerritory()
+        }       // GetDistinctElectedOfficeForTerritory()
 
-        [Route("electionForTerritory/byTerritory/{territoryId}/")]
+
+        [Route("distinctElectedOfficeForTerritory/byTerritory/{territoryId}/")]
         [HttpGet]
-        public async Task<ActionResult<List<Models.ElectionForTerritory>>> GetElectionsForTerritory(int territoryId)
+        public async Task<ActionResult<List<Models.DistinctElectedOfficeForTerritory>>> GetDistinctElectedOfficesForTerritory(int territoryId)
         {
 
             System.Text.StringBuilder sqlStatement;
@@ -119,7 +123,7 @@ namespace Overthink.PolitiScout.Controllers
             try
             {
 
-                List<Models.ElectionForTerritory> returnValue = new List<Models.ElectionForTerritory>();
+                List<Models.DistinctElectedOfficeForTerritory> returnValue = new List<Models.DistinctElectedOfficeForTerritory>();
 
                 processingDateTime = System.DateTime.Now;
 
@@ -128,10 +132,10 @@ namespace Overthink.PolitiScout.Controllers
                     await sqlConnection.OpenAsync();
 
                     sqlStatement = new System.Text.StringBuilder();
-                    sqlStatement.Append("SELECT eft.election_for_territory_id, eft.territory_id, eft.election_date, et.description ");
-                    sqlStatement.Append("  FROM election_for_territory eft inner join election_type et on eft.election_type_id = et.election_type_id ");
-                    sqlStatement.Append("  WHERE eft.territory_id = @territory_id ");
-                    sqlStatement.Append("  ORDER BY eft.election_date DESC ");
+                    sqlStatement.Append("SELECT deot.distinct_elected_office_for_territory_id, deot.electedOfficeForTerritoryId, eot.territory_id, deot.distinctive_office_designator, eo.reference_name ");
+                    sqlStatement.Append("  FROM distinct_elected_office_for_territory deot inner join elected_office_for_territory eot on deot.elected_office_for_territory_id = eot.elected_office_for_territory_id ");
+                    sqlStatement.Append("       INNER JOIN elected_office eo on eot.elected_office_id = eo.elected_office_id ");
+                    sqlStatement.Append("  WHERE deot.distinct_elected_office_for_territory_id = @distinct_elected_office_for_territory_id ");
 
                     sqlCommandGetTerritories = sqlConnection.CreateCommand();
                     sqlCommandGetTerritories.CommandText = sqlStatement.ToString();
@@ -144,17 +148,14 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandGetTerritories.Parameters["@territory_id"].Value = territoryId;
                     using (sqlDataReaderGetTerritories = await sqlCommandGetTerritories.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
                     {
-                        while (await sqlDataReaderGetTerritories.ReadAsync())
+                        if (await sqlDataReaderGetTerritories.ReadAsync())
                         {
-                            Models.ElectionForTerritory electionForTerritory = new Models.ElectionForTerritory();
+                            Models.DistinctElectedOfficeForTerritory distinctElectedOfficeForTerritory = new Models.DistinctElectedOfficeForTerritory();
 
-                            electionForTerritory.electionForTerritoryId = territoryId;
-                            electionForTerritory.territoryId = sqlDataReaderGetTerritories.GetInt32(ApplicationValues.ELECTION_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_ID);
-                            electionForTerritory.electionDate = sqlDataReaderGetTerritories.GetDateTime(ApplicationValues.ELECTION_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTION_DATE);
-                            electionForTerritory.electionTypeDescription = sqlDataReaderGetTerritories.GetString(ApplicationValues.ELECTION_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTION_TYPE_DESCRIPTION);
-
-                            returnValue.Add(electionForTerritory);
-
+                            distinctElectedOfficeForTerritory.distinctElectedOfficeForTerritoryId = sqlDataReaderGetTerritories.GetInt32(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_ID);
+                            distinctElectedOfficeForTerritory.electedOfficeForTerritoryId = sqlDataReaderGetTerritories.GetInt32(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_FOR_TERRITORY_ID);
+                            distinctElectedOfficeForTerritory.territoryId = territoryId;
+                            distinctElectedOfficeForTerritory.electedOfficeReferenceName = sqlDataReaderGetTerritories.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_REFERENCE_NAME);
                         };
 
                         await sqlDataReaderGetTerritories.CloseAsync();
@@ -168,7 +169,7 @@ namespace Overthink.PolitiScout.Controllers
             }
             catch (Exception ex1)
             {
-                logger.LogError(string.Format("Unhandled exception occurred in ElectionForTerritoryWSController::GetElectionsForTerritory().  Message is {0}", ex1.Message));
+                logger.LogError(string.Format("Unhandled exception occurred in DistinctElectedOfficeForTerritoryWSController::GetDistinctElectedOfficesForTerritory().  Message is {0}", ex1.Message));
 
                 if (ex1.InnerException != null)
                 {
@@ -186,9 +187,7 @@ namespace Overthink.PolitiScout.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
             }
 
-        }       // GetElectionsForTerritory()
-
-
+        }       // GetDistinctElectedOfficesForTerritory()
 
 
     }
