@@ -15,5 +15,9 @@ namespace Overthink.PolitiScout.Models
         public string electedOfficeDescription { get; set; }
         public int distinctElectedOfficeForTerritoryId { get; set; }
         public string distinctOfficeDesignator { get; set; }
+        public int reasonForEntryId { get; set; }
+        public int reasonForEntryDescription { get; set; }
+        public int reasonForDepartureId { get; set; }
+        public int reasonForDepartureDescription { get; set; }
     }
 }

@@ -39,6 +39,8 @@
         <input id="systemVersion" type="hidden" value="@Model.SystemVersion" />
         <input id="screenMode" type="hidden" />
         <input id="selectedPersonId" type="hidden" />
+        <input id="selectedCandidateForElectionId" type="hidden" />
+        <input id="selectedOccupiedElectedOfficeId" type="hidden" />
 
         <div class="row">
             &nbsp;
@@ -125,14 +127,14 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-1">
-                        <button type="button" id="addCandidacy" class="btn btn-sm btn-info">Add Candidacy</button>
+                    <div class="col-lg-2">
+                        <button type="button" id="addCandidateForElection" class="btn btn-sm btn-info">Add Candidate for Election</button>
                     </div>
-                    <div class="col-lg-1">
-                        <button type="button" id="editCandidacy" class="btn btn-sm btn-info">Edit Candidacy</button>
+                    <div class="col-lg-2">
+                        <button type="button" id="editCandidateForElection" class="btn btn-sm btn-info">Edit Candidate for Election</button>
                     </div>
-                    <div class="col-lg-1">
-                        <button type="button" id="deleteCandidacy" class="btn btn-sm btn-info">Delete Candidacy</button>
+                    <div class="col-lg-2">
+                        <button type="button" id="deleteCandidateForElection" class="btn btn-sm btn-info">Delete Candidate for Election</button>
                     </div>
                 </div>
 
@@ -281,7 +283,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="onDialogDelete" class="btn btn-default" data-dismiss="modal">Delete</button>
+                        <button type="button" id="onDialogDeletePerson" class="btn btn-default" data-dismiss="modal">Delete</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>

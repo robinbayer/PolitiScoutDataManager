@@ -23,7 +23,7 @@ $(function () {
             timeout: 60000,
             dataType: "json",
             type: "POST",
-            cach: false
+            cache: false
         },
         postData: {
             'lastNameSearchMask': function () {
@@ -393,7 +393,7 @@ $(function () {
     });     // $("#deletePerson").click()
 
 
-    $("#onDialogDelete").click(function () {
+    $("#onDialogDeletePerson").click(function () {
 
         var deletePersonInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/" + $("#selectedPersonId").val() + "/";
 
@@ -423,6 +423,8 @@ $(function () {
 
     });     // $("#onDialogDelete").click()
 
+
+
     $("#candidateForElectionGrid").jqGrid({
         url: personSearchResultGridUrl,
         type: 'GET',
@@ -431,18 +433,7 @@ $(function () {
             timeout: 60000,
             dataType: "json",
             type: "POST",
-            cach: false
-        },
-        postData: {
-            'lastNameSearchMask': function () {
-                return "";
-            },
-            'firstNameSearchMask': function () {
-                return "";
-            },
-            'preferredFirstNameSearchMask': function () {
-                return "";
-            },
+            cache: false
         },
         datatype: "json",
         serializeGridData: function (postData) {
@@ -461,11 +452,11 @@ $(function () {
         scrollrows: true,
         height: 200,
         rowNum: 5000,
-        colNames: ['Person ID', 'Last Name', 'First Name', 'Preferred First Name', 'Middle Name', 'Date of Birth'],
+        colNames: ['CandidateForElectionID', 'Level', 'Territory', 'Office Name', 'Designation', 'Election Date','Political Party'],
         colModel: [
             {
-                name: 'personId',
-                index: 'personId',
+                name: 'candidateForElectionId',
+                index: 'candidateForElectionId',
                 width: 50,
                 align: "left",
                 key: true,
@@ -473,36 +464,36 @@ $(function () {
                 editable: false
             },
             {
-                name: 'lastName',
-                index: 'lastName',
+                name: 'territoryLevelDescription',
+                index: 'territoryLevelDescription',
                 align: "left",
-                width: 200,
+                width: 100,
                 editable: false
             },
             {
-                name: 'firstName',
-                index: 'firstName',
+                name: 'territoryDescription',
+                index: 'territoryDescription',
                 align: "left",
-                width: 200,
+                width: 100,
                 editable: false
             },
             {
-                name: 'preferredFirstName',
-                index: 'preferedFirstName',
+                name: 'electedOfficeDescription',
+                index: 'electedOfficeDescription',
                 align: "left",
-                width: 200,
+                width: 150,
                 editable: false
             },
             {
-                name: 'middleName',
-                index: 'middleName',
+                name: 'distinctOfficeDesignator',
+                index: 'distinctOfficeDesignator',
                 align: "left",
-                width: 200,
+                width: 150,
                 editable: false
             },
             {
-                name: 'dateOfBirth',
-                index: 'dateOfBirth',
+                name: 'electionDate',
+                index: 'electionDate',
                 formatter: 'date', formatoptions: { srcformat: 'Y-M-d', newformat: 'Y-m-d' },
                 width: 100,
                 editable: false
@@ -510,8 +501,8 @@ $(function () {
         ],
         beforeRequest: function () {
 
-            $("#editPerson").attr("disabled", "disabled");
-            $("#deletePerson").attr("disabled", "disabled");
+            $("#editCandidateForElection").attr("disabled", "disabled");
+            $("#deleteCandidateForElection").attr("disabled", "disabled");
 
         },
         loadComplete: function () {
@@ -539,15 +530,96 @@ $(function () {
 
                 var rowData = $(this).getRowData(rowId);
 
-                $("#selectedPersonId").val(rowId);
+                $("#selectedCandidateForElectionId").val(rowId);
 
-                $("#editPerson").removeAttr("disabled");
-                $("#deletePerson").removeAttr("disabled");
+                $("#editCandidateForElection").removeAttr("disabled");
+                $("#deleteCandidateForElection").removeAttr("disabled");
 
             }       // left-click
         }       // onSelectRow event
 
     });      // $("#candidateForElectionGrid").jqGrid()
+
+    $("#addCandidateForElection").click(function () {
+
+        /*
+        $("#screenMode").val(SCREEN_MODE_ADD);
+        $("#addEditPersonModalLabel").text(SCREEN_MODE_ADD + " Person record");
+
+        $("#lastName").val("");
+        $("#firstName").val("");
+        $("#middleName").val("");
+        $("#preferredFirstName").val("");
+        $("#generationSuffix").val("");
+        $("#dateOfBirth").val("");
+
+        $("#addEditPersonModal").modal("show");
+        */
+
+    /*
+     *         public int candidateForElectionId { get; set; }
+            public int territoryLevelId { get; set; }
+            public string territoryLevelDescription { get; set; }
+            public int territoryId { get; set; }
+            public string territoryDescription { get; set; }
+            public string electedOfficeDescription { get; set; }
+            public int distinctElectedOfficeForTerritoryId { get; set; }
+            public string distinctOfficeDesignator { get; set; }
+            public DateTime electionDate { get; set; }
+            public int politicalPartyId { get; set; }
+            public string politicalPartyDescription { get; set; }
+    
+     * */
+
+
+    });     // $("#addCandidateForElection").click()
+
+    $("#editCandidateForElection").click(function () {
+
+        /*
+        var personInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/" + $("#selectedPersonId").val() + "/";
+
+        $.ajax({
+            type: "GET",
+            url: personInformationUrl,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (returnValue) {
+
+                // Load existing values from database into controls
+                $("#lastName").val(returnValue.lastName);
+                $("#firstName").val(returnValue.firstName);
+                $("#middleName").val(returnValue.middleName);
+                $("#preferredFirstName").val(returnValue.preferredFirstName);
+                $("#generationSuffix").val(returnValue.generationSuffix);
+
+                if (returnValue.dateOfBirth != "0001-01-01T00:00:00") {
+                    // Format date of birth to YYYY-MM-DD
+                    $("#dateOfBirth").val(returnValue.dateOfBirth.substring(0, 10));
+                }
+
+                $("#screenMode").val(SCREEN_MODE_EDIT);
+                $("#addEditPersonModalLabel").text(SCREEN_MODE_EDIT + " Person record");
+
+                $("#addEditPersonModal").modal("show");
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+
+                $("#errorMessageBlock").show();
+                $("#errorMessageText").html("An error occured during web service call to populate Person information");
+                setTimeout(function () {
+
+                    $("#errorMessageText").html("");
+                    $("#errorMessageBlock").hide();
+
+                }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+            }
+        });        // .ajax()
+        */
+
+    });     // $("editCandidateForElection").click()
 
     $("#occupiedElectedOfficeGrid").jqGrid({
         url: occupiedElectedOfficesGridUrl,
@@ -557,18 +629,7 @@ $(function () {
             timeout: 60000,
             dataType: "json",
             type: "POST",
-            cach: false
-        },
-        postData: {
-            'lastNameSearchMask': function () {
-                return "";
-            },
-            'firstNameSearchMask': function () {
-                return "";
-            },
-            'preferredFirstNameSearchMask': function () {
-                return "";
-            },
+            cache: false
         },
         datatype: "json",
         serializeGridData: function (postData) {
@@ -587,11 +648,11 @@ $(function () {
         scrollrows: true,
         height: 200,
         rowNum: 5000,
-        colNames: ['Person ID', 'Last Name', 'First Name', 'Preferred First Name', 'Middle Name', 'Date of Birth'],
+        colNames: ['Occupied Elected Office ID', 'Level', 'Territory', 'Office Name', 'Designation', 'Start Date', 'End Date'],
         colModel: [
             {
-                name: 'personId',
-                index: 'personId',
+                name: 'occupiedElectedOfficeId',
+                index: 'occupiedElectedOfficeId',
                 width: 50,
                 align: "left",
                 key: true,
@@ -599,45 +660,66 @@ $(function () {
                 editable: false
             },
             {
-                name: 'lastName',
-                index: 'lastName',
+                name: 'territoryLevelDescription',
+                index: 'territoryLevelDescription',
                 align: "left",
                 width: 200,
                 editable: false
             },
             {
-                name: 'firstName',
-                index: 'firstName',
+                name: 'territoryDescription',
+                index: 'territoryDescription',
                 align: "left",
-                width: 200,
+                width: 100,
                 editable: false
             },
             {
-                name: 'preferredFirstName',
-                index: 'preferedFirstName',
+                name: 'electedOfficeDescription',
+                index: 'electedOfficeDescription',
                 align: "left",
-                width: 200,
+                width: 150,
                 editable: false
             },
             {
-                name: 'middleName',
-                index: 'middleName',
+                name: 'distinctOfficeDesignator',
+                index: 'distinctOfficeDesignator',
                 align: "left",
-                width: 200,
+                width: 150,
                 editable: false
             },
             {
-                name: 'dateOfBirth',
-                index: 'dateOfBirth',
+                name: 'startDate',
+                index: 'startDate',
                 formatter: 'date', formatoptions: { srcformat: 'Y-M-d', newformat: 'Y-m-d' },
+                width: 80,
+                editable: false
+            },
+            {
+                name: 'endDate',
+                index: 'endDate',
+                formatter: 'date', formatoptions: { srcformat: 'Y-M-d', newformat: 'Y-m-d' },
+                width: 80,
+                editable: false
+            },
+            {
+                name: 'reasonForEntryDescription',
+                index: 'reasonForEntryDescription',
+                align: "left",
+                width: 100,
+                editable: false
+            },
+            {
+                name: 'reasonForDepartureDescription',
+                index: 'reasonForDepartureDescription',
+                align: "left",
                 width: 100,
                 editable: false
             }
         ],
         beforeRequest: function () {
 
-            $("#editPerson").attr("disabled", "disabled");
-            $("#deletePerson").attr("disabled", "disabled");
+            $("#editOccupiedElectedOffice").attr("disabled", "disabled");
+            $("#deleteOccupiedElectedOffice").attr("disabled", "disabled");
 
         },
         loadComplete: function () {
@@ -665,10 +747,10 @@ $(function () {
 
                 var rowData = $(this).getRowData(rowId);
 
-                $("#selectedPersonId").val(rowId);
+                $("#selectedOccupiedElectedOfficeId").val(rowId);
 
-                $("#editPerson").removeAttr("disabled");
-                $("#deletePerson").removeAttr("disabled");
+                $("#editOccupiedElectedOffice").removeAttr("disabled");
+                $("#deleteOccupiedElectedOffice").removeAttr("disabled");
 
             }       // left-click
         }       // onSelectRow event
@@ -676,4 +758,96 @@ $(function () {
     });      // $("#occupiedElectedOfficeGrid").jqGrid()
 
 
+    $("#addOccupiedElectedOffice").click(function () {
+
+        /*
+        $("#screenMode").val(SCREEN_MODE_ADD);
+        $("#addEditPersonModalLabel").text(SCREEN_MODE_ADD + " Person record");
+
+        $("#lastName").val("");
+        $("#firstName").val("");
+        $("#middleName").val("");
+        $("#preferredFirstName").val("");
+        $("#generationSuffix").val("");
+        $("#dateOfBirth").val("");
+
+        $("#addEditPersonModal").modal("show");
+        */
+
+
+    /*
+            public int occupiedElectedOfficeId { get; set; }
+            public int territoryLevelId { get; set; }
+            public string territoryLevelDescription { get; set; }
+            public int territoryId { get; set; }
+            public string territoryDescription { get; set; }
+            public string electedOfficeDescription { get; set; }
+            public int distinctElectedOfficeForTerritoryId { get; set; }
+            public string distinctOfficeDesignator { get; set; }
+            public int reasonForEntryId { get; set; }
+            public int reasonForEntryDescription { get; set; }
+            public int reasonForDepartureId { get; set; }
+            public int reasonForDepartureDescription { get; set; }
+     *
+     * */
+
+    });     // $("#addOccupiedElectedOffice").click()
+
+    $("#editOccupiedElectedOffice").click(function () {
+
+        /*
+        var personInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/" + $("#selectedPersonId").val() + "/";
+
+
+
+
+        $.ajax({
+            type: "GET",
+            url: personInformationUrl,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (returnValue) {
+
+                // Load existing values from database into controls
+                $("#lastName").val(returnValue.lastName);
+                $("#firstName").val(returnValue.firstName);
+                $("#middleName").val(returnValue.middleName);
+                $("#preferredFirstName").val(returnValue.preferredFirstName);
+                $("#generationSuffix").val(returnValue.generationSuffix);
+
+                if (returnValue.dateOfBirth != "0001-01-01T00:00:00") {
+                    // Format date of birth to YYYY-MM-DD
+                    $("#dateOfBirth").val(returnValue.dateOfBirth.substring(0, 10));
+                }
+
+                $("#screenMode").val(SCREEN_MODE_EDIT);
+                $("#addEditPersonModalLabel").text(SCREEN_MODE_EDIT + " Person record");
+
+                $("#addEditPersonModal").modal("show");
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+
+                $("#errorMessageBlock").show();
+                $("#errorMessageText").html("An error occured during web service call to populate Person information");
+                setTimeout(function () {
+
+                    $("#errorMessageText").html("");
+                    $("#errorMessageBlock").hide();
+
+                }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+            }
+        });        // .ajax()
+        */
+
+    });     // $("editOccupiedElectedOffice").click()
+
+
+
+
 });     // // document.ready()
+
+
+
+
