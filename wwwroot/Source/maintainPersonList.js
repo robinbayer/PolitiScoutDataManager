@@ -14,6 +14,12 @@ $(function () {
     $("#dialogErrorMessageBlock").hide();
     $("#editPerson").attr("disabled", "disabled");
     $("#deletePerson").attr("disabled", "disabled");
+    $("#addCandidateForElection").attr("disabled", "disabled");
+    $("#editCandidateForElection").attr("disabled", "disabled");
+    $("#deleteCandidateForElection").attr("disabled", "disabled");
+    $("#addOccupiedElectedOffice").attr("disabled", "disabled");
+    $("#editOccupiedElectedOffice").attr("disabled", "disabled");
+    $("#deleteOccupiedElectedOffice").attr("disabled", "disabled");
 
     $("#personSearchResultGrid").jqGrid({
         url: personSearchResultGridUrl,
@@ -105,6 +111,13 @@ $(function () {
             $("#editPerson").attr("disabled", "disabled");
             $("#deletePerson").attr("disabled", "disabled");
 
+            $("#addCandidateForElection").attr("disabled", "disabled");
+            $("#editCandidateForElection").attr("disabled", "disabled");
+            $("#deleteCandidateForElection").attr("disabled", "disabled");
+            $("#addOccupiedElectedOffice").attr("disabled", "disabled");
+            $("#editOccupiedElectedOffice").attr("disabled", "disabled");
+            $("#deleteOccupiedElectedOffice").attr("disabled", "disabled");
+
         },
         loadComplete: function () {
 
@@ -135,6 +148,9 @@ $(function () {
 
                 $("#editPerson").removeAttr("disabled");
                 $("#deletePerson").removeAttr("disabled");
+
+                $("#addCandidateForElection").removeAttr("disabled");
+                $("#addOccupiedElectedOffice").removeAttr("disabled");
 
             }       // left-click
         }       // onSelectRow event
@@ -272,7 +288,6 @@ $(function () {
             });     // .ajax()
 
         }
-
 
         $("#addEditPersonModal").modal("hide");
 
@@ -421,9 +436,7 @@ $(function () {
             }
         });        // .ajax()
 
-    });     // $("#onDialogDelete").click()
-
-
+    });     // $("#onDialogDeletePerson").click()
 
     $("#candidateForElectionGrid").jqGrid({
         url: personSearchResultGridUrl,
@@ -452,7 +465,7 @@ $(function () {
         scrollrows: true,
         height: 200,
         rowNum: 5000,
-        colNames: ['CandidateForElectionID', 'Level', 'Territory', 'Office Name', 'Designation', 'Election Date','Political Party'],
+        colNames: ['CandidateForElectionID', 'Level', 'Territory', 'Office Name', 'Designation', 'Election Date', 'Political Party'],
         colModel: [
             {
                 name: 'candidateForElectionId',
