@@ -16,14 +16,14 @@
     <link href="~/Styles/jquery-ui.structure.min.css" rel="stylesheet" />
     <link href="~/Styles/jquery-ui.theme.min.css" rel="stylesheet" />
     <link href="~/Styles/ui.jqgrid.css" rel="stylesheet" />
-    <link href="~/Styles/person.css?systemVersion=@Model.SystemVersion" rel="stylesheet" />
+    <link href="~/Styles/maintainPersonList.css?systemVersion=@Model.SystemVersion" rel="stylesheet" />
     <script src="~/Source/jquery-3.5.1.min.js"></script>
     <script src="~/Source/jquery-ui.min.js"></script>
     <script src="~/Source/jquery.ui.widget.js"></script>
     <script src="~/Source/jquery.jqGrid.min.js"></script>
     <script src="~/Source/grid.locale-en.js"></script>
     <script src="~/Source/bootstrap.min.js"></script>
-    <script src="~/Source/person.js?systemVersion=@Model.SystemVersion"></script>
+    <script src="~/Source/maintainPersonList.js?systemVersion=@Model.SystemVersion"></script>
 </head>
 <body>
 
@@ -107,6 +107,59 @@
                         <button type="button" id="deletePerson" class="btn btn-sm btn-info">Delete Person</button>
                     </div>
                 </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+                <h4>Candidacies for Selected Person</h4>
+
+                <div class="row">
+                    <div class="col-lg-11">
+                        <table id="candidateForElectionGrid" class="scroll"></table><br />
+                    </div>
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-1">
+                        <button type="button" id="addCandidacy" class="btn btn-sm btn-info">Add Candidacy</button>
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="button" id="editCandidacy" class="btn btn-sm btn-info">Edit Candidacy</button>
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="button" id="deleteCandidacy" class="btn btn-sm btn-info">Delete Candidacy</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+                <h4>Occupied Elected Office for Selected Person</h4>
+
+                <div class="row">
+                    <div class="col-lg-11">
+                        <table id="occupiedElectedOfficeGrid" class="scroll"></table><br />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <button type="button" id="addOccupedElectedOffice" class="btn btn-sm btn-info">Add Occupied Elected Office</button>
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="button" id="editOccupedElectedOffice" class="btn btn-sm btn-info">Edit Occupied Elected Office</button>
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="button" id="deleteOccupedElectedOffice" class="btn btn-sm btn-info">Delete Occupied Elected Office</button>
+                    </div>
+                </div>
+
 
             </div>
         </div>
