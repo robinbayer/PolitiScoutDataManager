@@ -51,7 +51,7 @@ namespace Overthink.PolitiScout.Controllers
                     await sqlConnection.OpenAsync();
 
                     sqlStatement = new System.Text.StringBuilder();
-                    sqlStatement.Append("SELECT deot.electedOfficeForTerritoryId, eot.territory_id, deot.distinctive_office_designator, eo.reference_name ");
+                    sqlStatement.Append("SELECT deot.electedOfficeForTerritoryId, eot.territory_id, eo.reference_name, deot.distinctive_office_designator ");
                     sqlStatement.Append("  FROM distinct_elected_office_for_territory deot inner join elected_office_for_territory eot on deot.elected_office_for_territory_id = eot.elected_office_for_territory_id ");
                     sqlStatement.Append("       INNER JOIN elected_office eo on eot.elected_office_id = eo.elected_office_id ");
                     sqlStatement.Append("  WHERE deot.distinct_elected_office_for_territory_id = @distinct_elected_office_for_territory_id ");
@@ -71,8 +71,8 @@ namespace Overthink.PolitiScout.Controllers
                         {
                             returnValue.distinctElectedOfficeForTerritoryId = distinctElectedOfficeForTerritoryId;
                             returnValue.electedOfficeForTerritoryId = sqlDataReaderGetTerritory.GetInt32(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_FOR_TERRITORY_ID);
-                            returnValue.distinctOfficeDesignator = sqlDataReaderGetTerritory.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_OFFICE_DEISGNATOR);
                             returnValue.electedOfficeReferenceName = sqlDataReaderGetTerritory.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_REFERENCE_NAME);
+                            returnValue.distinctOfficeDesignator = sqlDataReaderGetTerritory.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_OFFICE_DEISGNATOR);
 
                         };
 
@@ -132,7 +132,7 @@ namespace Overthink.PolitiScout.Controllers
                     await sqlConnection.OpenAsync();
 
                     sqlStatement = new System.Text.StringBuilder();
-                    sqlStatement.Append("SELECT deot.distinct_elected_office_for_territory_id, deot.electedOfficeForTerritoryId, eot.territory_id, deot.distinctive_office_designator, eo.reference_name ");
+                    sqlStatement.Append("SELECT deot.distinct_elected_office_for_territory_id, deot.electedOfficeForTerritoryId, eot.territory_id, eo.reference_name, deot.distinctive_office_designator ");
                     sqlStatement.Append("  FROM distinct_elected_office_for_territory deot inner join elected_office_for_territory eot on deot.elected_office_for_territory_id = eot.elected_office_for_territory_id ");
                     sqlStatement.Append("       INNER JOIN elected_office eo on eot.elected_office_id = eo.elected_office_id ");
                     sqlStatement.Append("  WHERE deot.distinct_elected_office_for_territory_id = @distinct_elected_office_for_territory_id ");
@@ -156,6 +156,7 @@ namespace Overthink.PolitiScout.Controllers
                             distinctElectedOfficeForTerritory.electedOfficeForTerritoryId = sqlDataReaderGetTerritories.GetInt32(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_FOR_TERRITORY_ID);
                             distinctElectedOfficeForTerritory.territoryId = territoryId;
                             distinctElectedOfficeForTerritory.electedOfficeReferenceName = sqlDataReaderGetTerritories.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_REFERENCE_NAME);
+                            distinctElectedOfficeForTerritory.distinctOfficeDesignator = sqlDataReaderGetTerritories.GetString(ApplicationValues.DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_LIST_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_OFFICE_DEISGNATOR);
                         };
 
                         await sqlDataReaderGetTerritories.CloseAsync();

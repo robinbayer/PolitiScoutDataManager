@@ -3,6 +3,7 @@ var territoryListUrl;
 var resultOfCandidacyListUrl;
 var reasonForEntryListUrl;
 var reasonForDepartureListUrl;
+var politicalPartyListUrl;
 var personSearchResultGridUrl;
 var candidateForElectionGridUrl;
 var occupiedElectedOfficeGrid;
@@ -16,7 +17,7 @@ const ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS = 5000;
 $(function () {
 
     $("#errorMessageBlock").hide();
-    $("#dialogErrorMessageBlock").hide();
+    $("#dialogErrorMessageBlock_Person").hide();
     $("#editPerson").attr("disabled", "disabled");
     $("#deletePerson").attr("disabled", "disabled");
     $("#addCandidateForElection").attr("disabled", "disabled");
@@ -47,23 +48,33 @@ $(function () {
         dataType: "json",
         success: function (returnValue) {
 
-            var territoryLevel = $("#territoryLevel");
+            var territoryLevel_Candidate = $("#territoryLevel_Candidate");
+            var territoryLevel_OccupiedOffice = $("#territoryLevel_OccupiedOffice");
 
             returnValue.forEach((element) => {
 
                 var option = $("<option />");
                 option.val(element.territoryLevelId);
                 option.html(element.referenceName);
-                territoryLevel.append(option);
+                territoryLevel_Candidate.append(option);
+                territoryLevel_OccupiedOffice.append(option);
 
             });
 
             // Select first item in list and trigger initial populate
-            $("#territoryLevel option:eq(0)").prop('selected', true);
+            $("#territoryLevel_Candidate option:eq(0)").prop('selected', true);
 
             // PROGRAMMER'S NOTE:  If triggering immediately, would routinely fail the refresh call to the web service.
             setTimeout(function () {
-                $("#territoryLevel").trigger("change");
+                $("#territoryLevel_Candidate").trigger("change");
+            }, 100);
+
+            // Select first item in list and trigger initial populate
+            $("#territoryLevel_OccupiedOffice option:eq(0)").prop('selected', true);
+
+            // PROGRAMMER'S NOTE:  If triggering immediately, would routinely fail the refresh call to the web service.
+            setTimeout(function () {
+                $("#territoryLevel_OccupiedOffice").trigger("change");
             }, 100);
 
         },
@@ -189,8 +200,45 @@ $(function () {
         }
     });        // .ajax()
 
+    ///////////////////////////////////////////////////////////
+    //////////// Populate other single-load objects ///////////
+    ///////////////////////////////////////////////////////////
 
+    //---------------------------------------------
+    //---- Political Party list dropdown -----
+    //---------------------------------------------
 
+    $.ajax({
+        type: "GET",
+        url: politicalPartyListUrl,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (returnValue) {
+
+            var politicalParty = $("#politicalParty");
+
+            returnValue.forEach((element) => {
+
+                var option = $("<option />");
+                option.val(element.politicalPartyId);
+                option.html(element.referenceName);
+                politicalParty.append(option);
+
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            $("#errorMessageBlock").show();
+            $("#errorMessageText").html("An error occured during web service call to populate Political Party list");
+            setTimeout(function () {
+
+                $("#errorMessageText").html("");
+                $("#errorMessageBlock").hide();
+
+            }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+        }
+    });        // .ajax()
 
 
     $("#personSearchResultGrid").jqGrid({
@@ -332,26 +380,26 @@ $(function () {
     $("#okOnAddEditPersonModal").click(function () {
 
         // Perform validations
-        $("#dialogErrorMessageBlock").hide();
+        $("#dialogErrorMessageBlock_Person").hide();
 
         if ($("#lastName").val() == "") {
-            $("#dialogErrorMessageText").html("A Last Name must be specified.");
+            $("#dialogErrorMessageText_Person").html("A Last Name must be specified.");
             $("#lastName").focus();
-            $("#dialogErrorMessageBlock").show();
+            $("#dialogErrorMessageBlock_Person").show();
             return;
         }
 
         if ($("#firstName").val() == "") {
-            $("#dialogErrorMessageText").html("A First Name must be specified.");
+            $("#dialogErrorMessageText_Person").html("A First Name must be specified.");
             $("#firstName").focus();
-            $("#dialogErrorMessageBlock").show();
+            $("#dialogErrorMessageBlock_Person").show();
             return;
         }
 
         if ($("#preferredFirstName").val() == "") {
-            $("#dialogErrorMessageText").html("A Preferred First Name must be specified.");
+            $("#dialogErrorMessageText_Person").html("A Preferred First Name must be specified.");
             $("#preferredFirstName").focus();
-            $("#dialogErrorMessageBlock").show();
+            $("#dialogErrorMessageBlock_Person").show();
             return;
         }
 

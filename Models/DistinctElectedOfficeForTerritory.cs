@@ -10,7 +10,7 @@ namespace Overthink.PolitiScout.Models
         public int distinctElectedOfficeForTerritoryId { get; set; }
         public int electedOfficeForTerritoryId { get; set; }
         public int territoryId { get; set; }
-        public string distinctOfficeDesignator { get; set; }
         public string electedOfficeReferenceName { get; set; }
+        public string distinctOfficeDesignator { get; set; }
     }
 }

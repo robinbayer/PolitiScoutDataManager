@@ -257,8 +257,8 @@
                             &nbsp;
                         </div>
 
-                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock">
-                            <span id="dialogErrorMessageText"></span>
+                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock_Person">
+                            <span id="dialogErrorMessageText_Person"></span>
                         </div>
 
                     </div>
@@ -307,10 +307,10 @@
 
                         <div class="row">
                             <div class="col-sm-3">
-                                <label for="lastName">Level</label>
+                                <label for="territoryLevel_Candidate">Level</label>
                             </div>
                             <div class="col-sm-9">
-                                <select id="territoryLevel"></select>
+                                <select id="territoryLevel_Candidate"></select>
                             </div>
                         </div>
 
@@ -320,10 +320,10 @@
 
                         <div class="row">
                             <div class="col-sm-3">
-                                <label for="firstName">Territory</label>
+                                <label for="territory_Candidate">Territory</label>
                             </div>
                             <div class="col-sm-9">
-                                <select id="territory"></select>
+                                <select id="territory_Candidate"></select>
                             </div>
                         </div>
 
@@ -333,10 +333,10 @@
 
                         <div class="row">
                             <div class="col-sm-3">
-                                <label for="middleName">Distinct Office for Territory</label>
+                                <label for="preferredFirstName">Election Date</label>
                             </div>
                             <div class="col-sm-9">
-                                <select id="distinctOfficeForTerritory"></select>
+                                <input class="form-control" type="date" id="electionDate">
                             </div>
                         </div>
 
@@ -346,7 +346,33 @@
 
                         <div class="row">
                             <div class="col-sm-3">
-                                <label for="generationSuffix">Political Party</label>
+                                <label for="electedOfficeForTerritory_Candidate">Elected Office for Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="electedOfficeForTerritory_Candidate"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="distinctOfficeForTerritory_Candidate">Distinct Office for Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="distinctOfficeForTerritory_Candidate"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="politicalParty">Political Party</label>
                             </div>
                             <div class="col-sm-9">
                                 <select id="politicalParty"></select>
@@ -359,7 +385,7 @@
 
                         <div class="row">
                             <div class="col-sm-3">
-                                <label for="preferredFirstName">Result of Candidacy</label>
+                                <label for="resultOfCandidacye">Result of Candidacy</label>
                             </div>
                             <div class="col-sm-9">
                                 <select id="resultOfCandidacy"></select>
@@ -370,12 +396,38 @@
                             &nbsp;
                         </div>
 
+                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock_Candidate">
+                            <span id="dialogErrorMessageText_Candidate"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="okOnAddEditCandidateForElectionModal" class="btn btn-primary">OK</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* <<<<<<<<<<<<<<<<<<<<<<<<<< Occupied Elected Office >>>>>>>>>>>>>>>>>>>>>>>>>>>>> *@
+
+        <div class="modal fade" id="addEditOccupiedElectedOfficeModal" tabindex="-1" role="dialog" aria-labelledby="addEditOccupiedElectedOfficeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEditOccupiedElectedOfficeModalLabel">{mode} Occupied Elected Office</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
                         <div class="row">
                             <div class="col-sm-3">
-                                <label for="preferredFirstName">Date of Birth</label>
+                                <label for="territoryLevel_OccupiedOffice">Level</label>
                             </div>
                             <div class="col-sm-9">
-                                <input class="form-control" type="date" id="dateOfBirth">
+                                <select id="territoryLevel_OccupiedOffice"></select>
                             </div>
                         </div>
 
@@ -383,21 +435,105 @@
                             &nbsp;
                         </div>
 
-                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock">
-                            <span id="dialogErrorMessageText"></span>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="territory_OccupiedOffice">Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="territory_OccupiedOffice"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="electedOfficeForTerritory_OccupiedOffice">Elected Office for Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="electedOfficeForTerritory_OccupiedOffice"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="distinctOfficeForTerritory_OccupiedOffice">Distinct Office for Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="distinctOfficeForTerritory_OccupiedOffice"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="startDate">Start Date</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="date" id="startDate">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="reasonForEntry">Reason for Entry</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="reasonForEntry"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="endDate">End Date</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="date" id="endDate">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="reasonForEntry">Reason for Entry</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="reasonForEntry"></select>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock_OccupiedOffice">
+                            <span id="dialogErrorMessageText_OccupiedOffice"></span>
                         </div>
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="okOnAddEditPersonModal" class="btn btn-primary">OK</button>
+                        <button type="button" id="okOnAddEditOccupiedElectedOfficeModal" class="btn btn-primary">OK</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
         </div>
-
-
-        @* <<<<<<<<<<<<<<<<<<<<<<<<<< Occupied Elected Office >>>>>>>>>>>>>>>>>>>>>>>>>>>>> *@
 
 
     </div>
