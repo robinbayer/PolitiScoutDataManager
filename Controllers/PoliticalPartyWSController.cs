@@ -107,15 +107,15 @@ namespace Overthink.PolitiScout.Controllers
 
         [Route("politicalParty/list/")]
         [HttpGet]
-        public async Task<ActionResult<List<Models.PoliticalParty>>> GetPoliticalParties()
+        public async Task<ActionResult<List<Models.PoliticalParty>>> GetPoliticalPartyList()
         {
 
             System.Text.StringBuilder sqlStatement;
             DateTime processingDateTime;
 
             NpgsqlConnection sqlConnection;
-            NpgsqlCommand sqlCommandGetPoliticalParties;
-            NpgsqlDataReader sqlDataReaderGetPoliticalParties;
+            NpgsqlCommand sqlCommandGetPolicitalPartyList;
+            NpgsqlDataReader sqlDataReaderGetPolicitalPartyList;
 
             try
             {
@@ -133,28 +133,27 @@ namespace Overthink.PolitiScout.Controllers
                     sqlStatement.Append("  FROM political_party p ");
                     sqlStatement.Append("  ORDER BY p.reference_name ");
 
-                    sqlCommandGetPoliticalParties = sqlConnection.CreateCommand();
-                    sqlCommandGetPoliticalParties.CommandText = sqlStatement.ToString();
-                    sqlCommandGetPoliticalParties.CommandTimeout = 600;
-                    sqlCommandGetPoliticalParties.Parameters.Add(new NpgsqlParameter("@political_party_id", NpgsqlTypes.NpgsqlDbType.Integer));
-                    await sqlCommandGetPoliticalParties.PrepareAsync();
+                    sqlCommandGetPolicitalPartyList = sqlConnection.CreateCommand();
+                    sqlCommandGetPolicitalPartyList.CommandText = sqlStatement.ToString();
+                    sqlCommandGetPolicitalPartyList.CommandTimeout = 600;
+                    await sqlCommandGetPolicitalPartyList.PrepareAsync();
 
-                    using (sqlDataReaderGetPoliticalParties = await sqlCommandGetPoliticalParties.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
+                    using (sqlDataReaderGetPolicitalPartyList = await sqlCommandGetPolicitalPartyList.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
                     {
-                        while (await sqlDataReaderGetPoliticalParties.ReadAsync())
+                        while (await sqlDataReaderGetPolicitalPartyList.ReadAsync())
                         {
 
                             Models.PoliticalParty politicalParty = new Models.PoliticalParty();
 
-                            politicalParty.politicalPartyId = sqlDataReaderGetPoliticalParties.GetInt32(ApplicationValues.POLITICAL_PARTY_LIST_QUERY_RESULT_COLUMN_OFFSET_POLITICAL_PARTY_ID); ;
-                            politicalParty.referenceName = sqlDataReaderGetPoliticalParties.GetString(ApplicationValues.POLITICAL_PARTY_LIST_QUERY_RESULT_COLUMN_OFFSET_REFERENCE_NAME);
-                            politicalParty.abbreviation = sqlDataReaderGetPoliticalParties.GetString(ApplicationValues.POLITICAL_PARTY_LIST_QUERY_RESULT_COLUMN_OFFSET_ABBREVIATION);
+                            politicalParty.politicalPartyId = sqlDataReaderGetPolicitalPartyList.GetInt32(ApplicationValues.POLITICAL_PARTY_LIST_QUERY_RESULT_COLUMN_OFFSET_POLITICAL_PARTY_ID);
+                            politicalParty.referenceName = sqlDataReaderGetPolicitalPartyList.GetString(ApplicationValues.POLITICAL_PARTY_LIST_QUERY_RESULT_COLUMN_OFFSET_REFERENCE_NAME);
+                            politicalParty.abbreviation = sqlDataReaderGetPolicitalPartyList.GetString(ApplicationValues.POLITICAL_PARTY_LIST_QUERY_RESULT_COLUMN_OFFSET_ABBREVIATION);
 
                             returnValue.Add(politicalParty);
 
                         };
 
-                        await sqlDataReaderGetPoliticalParties.CloseAsync();
+                        await sqlDataReaderGetPolicitalPartyList.CloseAsync();
                     };
 
                     await sqlConnection.CloseAsync();
@@ -183,7 +182,7 @@ namespace Overthink.PolitiScout.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
             }
 
-        }       // GetPoliticalParty()
+        }       // GetPoliticalPartyList()
 
 
     }

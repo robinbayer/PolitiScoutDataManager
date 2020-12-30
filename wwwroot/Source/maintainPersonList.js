@@ -581,6 +581,9 @@ $(function () {
             public DateTime electionDate { get; set; }
             public int politicalPartyId { get; set; }
             public string politicalPartyDescription { get; set; }
+            public int resultOfCandidacyId { get; set; }
+            public int resultOfCandidacyDescription { get; set; }
+
     
      * */
 
