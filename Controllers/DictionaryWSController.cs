@@ -27,6 +27,160 @@ namespace Overthink.PolitiScout.Controllers
             this.logger = logger;
         }
 
+        [Route("dictionary/territoryLevel/{territoryLevelId}/")]
+        [HttpGet]
+        public async Task<ActionResult<Models.TerritoryLevel>> GetTerritoryLevel(int territoryLevelId)
+        {
+
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
+
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandGetTerritoryLevel;
+            NpgsqlDataReader sqlDataReaderGetTerritoryLevel;
+
+            try
+            {
+
+                Models.TerritoryLevel returnValue = new Models.TerritoryLevel();
+
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("SELECT t.reference_name");
+                    sqlStatement.Append("  FROM territory_level t ");
+                    sqlStatement.Append("  WHERE t.territory_level_id = @territory_level_id ");
+
+                    sqlCommandGetTerritoryLevel = sqlConnection.CreateCommand();
+                    sqlCommandGetTerritoryLevel.CommandText = sqlStatement.ToString();
+                    sqlCommandGetTerritoryLevel.CommandTimeout = 600;
+                    sqlCommandGetTerritoryLevel.Parameters.Add(new NpgsqlParameter("@territory_level_id", NpgsqlTypes.NpgsqlDbType.Integer));
+
+                    sqlCommandGetTerritoryLevel.Parameters["@territory_level_id"].Value = 0;
+                    await sqlCommandGetTerritoryLevel.PrepareAsync();
+
+                    sqlCommandGetTerritoryLevel.Parameters["@territory_level_id"].Value = territoryLevelId;
+                    using (sqlDataReaderGetTerritoryLevel = await sqlCommandGetTerritoryLevel.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
+                    {
+                        if (await sqlDataReaderGetTerritoryLevel.ReadAsync())
+                        {
+                            returnValue.territoryLevelId = territoryLevelId;
+                            returnValue.referenceName = sqlDataReaderGetTerritoryLevel.GetString(ApplicationValues.TERRITORY_LEVEL_QUERY_RESULT_COLUMN_OFFSET_REFERENCE_NAME);
+                        };
+
+                        await sqlDataReaderGetTerritoryLevel.CloseAsync();
+                    };
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in DictionaryWSController::GetTerritoryLevel().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // GetTerritoryLevel()
+
+        [Route("dictionary/territoryLevel/list/")]
+        [HttpGet]
+        public async Task<ActionResult<List<Models.TerritoryLevel>>> GetTerritoryLevelList()
+        {
+
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
+
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandGetTerritoryLevelList;
+            NpgsqlDataReader sqlDataReaderGetTerritoryLevelList;
+
+            try
+            {
+
+                List<Models.TerritoryLevel> returnValue = new List<Models.TerritoryLevel>();
+
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("SELECT t.territory_level_id, t.reference_name ");
+                    sqlStatement.Append("  FROM territory_level t ");
+                    sqlStatement.Append("  ORDER BY t.reference_name ");
+
+                    sqlCommandGetTerritoryLevelList = sqlConnection.CreateCommand();
+                    sqlCommandGetTerritoryLevelList.CommandText = sqlStatement.ToString();
+                    sqlCommandGetTerritoryLevelList.CommandTimeout = 600;
+                    await sqlCommandGetTerritoryLevelList.PrepareAsync();
+
+                    using (sqlDataReaderGetTerritoryLevelList = await sqlCommandGetTerritoryLevelList.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
+                    {
+                        while (await sqlDataReaderGetTerritoryLevelList.ReadAsync())
+                        {
+
+                            Models.TerritoryLevel territoryLevel = new Models.TerritoryLevel();
+
+                            territoryLevel.territoryLevelId = sqlDataReaderGetTerritoryLevelList.GetInt32(ApplicationValues.TERRITORY_LEVEL_LIST_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_LEVEL_ID);
+                            territoryLevel.referenceName = sqlDataReaderGetTerritoryLevelList.GetString(ApplicationValues.TERRITORY_LEVEL_LIST_QUERY_RESULT_COLUMN_OFFSET_REFERENCE_NAME);
+
+                            returnValue.Add(territoryLevel);
+
+                        };
+
+                        await sqlDataReaderGetTerritoryLevelList.CloseAsync();
+                    };
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in DictionaryWSController::GetTerritoryLevelList().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // GetTerritoryLevelList()
+
         [Route("dictionary/resultOfCandidacy/{resultOfCandidacyId}/")]
         [HttpGet]
         public async Task<ActionResult<Models.ResultOfCandidacy>> GetResultOfCandidacy(int resultOfCandidacyId)

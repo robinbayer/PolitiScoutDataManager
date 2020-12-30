@@ -1,4 +1,9 @@
-﻿var personSearchResultGridUrl;
+﻿var territoryLevelListUrl;
+var territoryListUrl;
+var resultOfCandidacyListUrl;
+var reasonForEntryListUrl;
+var reasonForDepartureListUrl;
+var personSearchResultGridUrl;
 var candidateForElectionGridUrl;
 var occupiedElectedOfficeGrid;
 
@@ -20,6 +25,173 @@ $(function () {
     $("#addOccupiedElectedOffice").attr("disabled", "disabled");
     $("#editOccupiedElectedOffice").attr("disabled", "disabled");
     $("#deleteOccupiedElectedOffice").attr("disabled", "disabled");
+
+    ////////////////////////////////////////////////////
+    //////////// Populate dictionary objects ///////////
+    ////////////////////////////////////////////////////
+
+    territoryLevelListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/territoryLevel/list/";
+    territoryListUrl = "";
+    resultOfCandidacyListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/resultOfCandidacy/list/";
+    reasonForEntryListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/reasonForEntry/list/";
+    reasonForDepartureListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/reasonForDeparture/list/";
+
+    //----------------------------------------
+    //---- Territory Level list dropdown -----
+    //----------------------------------------
+
+    $.ajax({
+        type: "GET",
+        url: territoryLevelListUrl,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (returnValue) {
+
+            var territoryLevel = $("#territoryLevel");
+
+            returnValue.forEach((element) => {
+
+                var option = $("<option />");
+                option.val(element.territoryLevelId);
+                option.html(element.referenceName);
+                territoryLevel.append(option);
+
+            });
+
+            // Select first item in list and trigger initial populate
+            $("#territoryLevel option:eq(0)").prop('selected', true);
+
+            // PROGRAMMER'S NOTE:  If triggering immediately, would routinely fail the refresh call to the web service.
+            setTimeout(function () {
+                $("#territoryLevel").trigger("change");
+            }, 100);
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            $("#errorMessageBlock").show();
+            $("#errorMessageText").html("An error occured during web service call to populate Territory Level list");
+            setTimeout(function () {
+
+                $("#errorMessageText").html("");
+                $("#errorMessageBlock").hide();
+
+            }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+        }
+    });        // .ajax()
+
+    //--------------------------------------------
+    //---- Result of Candidacy list dropdown -----
+    //--------------------------------------------
+
+    $.ajax({
+        type: "GET",
+        url: resultOfCandidacyListUrl,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (returnValue) {
+
+            var resultOfCandidacy = $("#resultOfCandidacy");
+
+            returnValue.forEach((element) => {
+
+                var option = $("<option />");
+                option.val(element.resultOfCandidacyId);
+                option.html(element.description);
+                resultOfCandidacy.append(option);
+
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            $("#errorMessageBlock").show();
+            $("#errorMessageText").html("An error occured during web service call to populate Result of Candidacy list");
+            setTimeout(function () {
+
+                $("#errorMessageText").html("");
+                $("#errorMessageBlock").hide();
+
+            }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+        }
+    });        // .ajax()
+
+    //-----------------------------------------
+    //---- Reason for Entry list dropdown -----
+    //-----------------------------------------
+
+    $.ajax({
+        type: "GET",
+        url: reasonForEntryListUrl,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (returnValue) {
+
+            var reasonForEntry = $("#reasonForEntry");
+
+            returnValue.forEach((element) => {
+
+                var option = $("<option />");
+                option.val(element.reasonForEntryId);
+                option.html(element.description);
+                reasonForEntry.append(option);
+
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            $("#errorMessageBlock").show();
+            $("#errorMessageText").html("An error occured during web service call to populate Reason for Entry list");
+            setTimeout(function () {
+
+                $("#errorMessageText").html("");
+                $("#errorMessageBlock").hide();
+
+            }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+        }
+    });        // .ajax()
+
+    //---------------------------------------------
+    //---- Reason for Departure list dropdown -----
+    //---------------------------------------------
+
+    $.ajax({
+        type: "GET",
+        url: reasonForDepartureListUrl,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (returnValue) {
+
+            var reasonForDeparture = $("#reasonForDeparture");
+
+            returnValue.forEach((element) => {
+
+                var option = $("<option />");
+                option.val(element.reasonForDepartureId);
+                option.html(element.description);
+                reasonForDeparture.append(option);
+
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+            $("#errorMessageBlock").show();
+            $("#errorMessageText").html("An error occured during web service call to populate Reason for Departure list");
+            setTimeout(function () {
+
+                $("#errorMessageText").html("");
+                $("#errorMessageBlock").hide();
+
+            }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+        }
+    });        // .ajax()
+
+
+
+
 
     $("#personSearchResultGrid").jqGrid({
         url: personSearchResultGridUrl,

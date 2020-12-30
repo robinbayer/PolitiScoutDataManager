@@ -166,6 +166,8 @@
             </div>
         </div>
 
+        @* <<<<<<<<<<<<<<<<<<<<<<<<<< Person >>>>>>>>>>>>>>>>>>>>>>>>>>>>> *@
+
         <div class="modal fade" id="addEditPersonModal" tabindex="-1" role="dialog" aria-labelledby="addEditPersonModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -289,6 +291,113 @@
                 </div>
             </div>
         </div>
+
+        @* <<<<<<<<<<<<<<<<<<<<<<<<<< Candidate for Election >>>>>>>>>>>>>>>>>>>>>>>>>>>>> *@
+
+        <div class="modal fade" id="addEditCandidateForElectionModal" tabindex="-1" role="dialog" aria-labelledby="addEditCandidateForElectionModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEditCandidateForElectionModalLabel">{mode} Candidate for Election</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="lastName">Level</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="territoryLevel"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="firstName">Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="territory"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="middleName">Distinct Office for Territory</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="distinctOfficeForTerritory"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="generationSuffix">Political Party</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="politicalParty"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="preferredFirstName">Result of Candidacy</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <select id="resultOfCandidacy"></select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="preferredFirstName">Date of Birth</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="date" id="dateOfBirth">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            &nbsp;
+                        </div>
+
+                        <div class="alert alert-danger" role="alert" id="dialogErrorMessageBlock">
+                            <span id="dialogErrorMessageText"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="okOnAddEditPersonModal" class="btn btn-primary">OK</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @* <<<<<<<<<<<<<<<<<<<<<<<<<< Occupied Elected Office >>>>>>>>>>>>>>>>>>>>>>>>>>>>> *@
 
 
     </div>
