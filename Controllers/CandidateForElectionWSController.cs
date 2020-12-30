@@ -50,23 +50,6 @@ namespace Overthink.PolitiScout.Controllers
                 {
                     await sqlConnection.OpenAsync();
 
-                    /*
-                     *         public int candidateForElectionId { get; set; }
-                            public int territoryLevelId { get; set; }
-                            public string territoryLevelDescription { get; set; }
-                            public int territoryId { get; set; }
-                            public string territoryDescription { get; set; }
-                            public string electedOfficeDescription { get; set; }
-                            public int distinctElectedOfficeForTerritoryId { get; set; }
-                            public string distinctOfficeDesignator { get; set; }
-                            public DateTime electionDate { get; set; }
-                            public int politicalPartyId { get; set; }
-                            public string politicalPartyDescription { get; set; }
-                            public int resultOfCandidacyId { get; set; }
-                            public int resultOfCandidacyDescription { get; set; }
-
-                     * */
-
                     sqlStatement = new System.Text.StringBuilder();
                     sqlStatement.Append("SELECT tl.territory_level_id, tl.reference_name, t.territory_id, t.full_name, eo.reference_name, deot.distinct_elected_office_for_territory_id, ");
                     sqlStatement.Append("       deot.distinct_office_designator, elft.election_date, p.political_party_id, p.reference_name, roc.result_of_candidacy_id, roc.description ");
@@ -94,30 +77,30 @@ namespace Overthink.PolitiScout.Controllers
                     {
                         if (await sqlDataReaderGetCandidateForElection.ReadAsync())
                         {
-                            returnValue.personId = personId;
-                            returnValue.lastName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_LAST_NAME);
-                            returnValue.firstName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_FIRST_NAME);
 
-                            if (!await sqlDataReaderGetPerson.IsDBNullAsync(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME))
-                            {
-                                returnValue.middleName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_MIDDLE_NAME);
-                            }
+                            /*
+                                    public static int CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_RESULT_OF_CANDIDACY_ID = 10;
+                                    public static int CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_RESULT_OF_CANDIDACY_DESCRIPTION = 11;
 
-                            if (!await sqlDataReaderGetPerson.IsDBNullAsync(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX))
-                            {
-                                returnValue.generationSuffix = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_GENERATION_SUFFIX);
-                            }
+                             * */
 
-                            returnValue.preferredFirstName = sqlDataReaderGetPerson.GetString(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_PREFERRED_FIRST_NAME);
 
-                            if (!await sqlDataReaderGetPerson.IsDBNullAsync(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH))
-                            {
-                                returnValue.dateOfBirth = sqlDataReaderGetPerson.GetDateTime(ApplicationValues.PERSON_QUERY_RESULT_COLUMN_OFFSET_DATE_OF_BIRTH);
-                            }
+                            returnValue.candidateForElectionId = candidateForElectionId;
+                            returnValue.territoryLevelId = sqlDataReaderGetCandidateForElection.GetInt32(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_LEVEL_ID);
+                            returnValue.territoryLevelDescription = sqlDataReaderGetCandidateForElection.GetString(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_LEVEL_DESCRIPTION);
+                            returnValue.territoryId = sqlDataReaderGetCandidateForElection.GetInt32(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_ID);
+                            returnValue.territoryFullName = sqlDataReaderGetCandidateForElection.GetString(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_TERRITORY_FULL_NAME);
+                            returnValue.electedOfficeDescription = sqlDataReaderGetCandidateForElection.GetString(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_ELECTED_OFFICE_REFERENCE_NAME);
+                            returnValue.distinctElectedOfficeForTerritoryId = sqlDataReaderGetCandidateForElection.GetInt32(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_ELECTED_OFFICE_FOR_TERRITORY_ID);
+                            returnValue.distinctOfficeDesignator = sqlDataReaderGetCandidateForElection.GetString(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_DISTINCT_OFFICE_DESIGNATOR);
+                            returnValue.electionDate = sqlDataReaderGetCandidateForElection.GetDateTime(ApplicationValues.CANDIDATE_FOR_ELECTION_LIST_QUERY_RESULT_COLUMN_OFFSET_ELECTION_DATE);
+                            returnValue.politicalPartyId = sqlDataReaderGetCandidateForElection.GetInt32(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_POLITICAL_PARTY_ID);
+                            returnValue.politicalPartyReferenceName = sqlDataReaderGetCandidateForElection.GetString(ApplicationValues.CANDIDATE_FOR_ELECTION_QUERY_RESULT_COLUMN_OFFSET_POLITICAL_PARTY_REFERENCE_NAME);
+
 
                         };
 
-                        await sqlDataReaderGetPerson.CloseAsync();
+                        await sqlDataReaderGetCandidateForElection.CloseAsync();
                     };
 
                     await sqlConnection.CloseAsync();

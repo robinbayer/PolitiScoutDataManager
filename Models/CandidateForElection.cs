@@ -11,14 +11,14 @@ namespace Overthink.PolitiScout.Models
         public int territoryLevelId { get; set; }
         public string territoryLevelDescription { get; set; }
         public int territoryId { get; set; }
-        public string territoryDescription { get; set; }
+        public string territoryFullName { get; set; }
         public string electedOfficeDescription { get; set; }
         public int distinctElectedOfficeForTerritoryId { get; set; }
         public string distinctOfficeDesignator { get; set; }
         public DateTime electionDate { get; set; }
         public int politicalPartyId { get; set; }
-        public string politicalPartyDescription { get; set; }
+        public string politicalPartyReferenceName { get; set; }
         public int resultOfCandidacyId { get; set; }
-        public int resultOfCandidacyDescription { get; set; }
+        public string resultOfCandidacyDescription { get; set; }
     }
 }

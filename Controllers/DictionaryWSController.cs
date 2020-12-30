@@ -535,7 +535,7 @@ namespace Overthink.PolitiScout.Controllers
                         if (await sqlDataReaderGetReasonForDeparture.ReadAsync())
                         {
                             returnValue.reasonForDepartureId = reasonForDepartureId;
-                            returnValue.description = sqlDataReaderGetReasonForDeparture.GetString(ApplicationValues.reason_for_departure_QUERY_RESULT_COLUMN_OFFSET_DESCRIPTION);
+                            returnValue.description = sqlDataReaderGetReasonForDeparture.GetString(ApplicationValues.REASON_FOR_DEPARTURE_QUERY_RESULT_COLUMN_OFFSET_DESCRIPTION);
                         };
 
                         await sqlDataReaderGetReasonForDeparture.CloseAsync();
@@ -610,8 +610,8 @@ namespace Overthink.PolitiScout.Controllers
 
                             Models.ReasonForDeparture reasonForDeparture = new Models.ReasonForDeparture();
 
-                            reasonForDeparture.reasonForDepartureId = sqlDataReaderGetResultOfCandidacyList.GetInt32(ApplicationValues.reason_for_departure_LIST_QUERY_RESULT_COLUMN_OFFSET_reason_for_departure_ID);
-                            reasonForDeparture.description = sqlDataReaderGetResultOfCandidacyList.GetString(ApplicationValues.reason_for_departure_LIST_QUERY_RESULT_COLUMN_OFFSET_DESCRIPTION);
+                            reasonForDeparture.reasonForDepartureId = sqlDataReaderGetResultOfCandidacyList.GetInt32(ApplicationValues.REASON_FOR_DEPARTURE_LIST_QUERY_RESULT_COLUMN_OFFSET_REASON_FOR_DEPARTURE_ID);
+                            reasonForDeparture.description = sqlDataReaderGetResultOfCandidacyList.GetString(ApplicationValues.REASON_FOR_DEPARTURE_LIST_QUERY_RESULT_COLUMN_OFFSET_DESCRIPTION);
 
                             returnValue.Add(reasonForDeparture);
 
