@@ -27,12 +27,23 @@ $(function () {
     $("#editOccupiedElectedOffice").attr("disabled", "disabled");
     $("#deleteOccupiedElectedOffice").attr("disabled", "disabled");
 
+    $("#territoryLevel_Candidate").find("option").remove();
+    $("#territoryLevel_OccupiedOffice").find("option").remove();
+    $("#resultOfCandidacy").find("option").remove();
+    $("#reasonForEntry").find("option").remove();
+    $("#reasonForDeparture").find("option").remove();
+    $("#politicalParty").find("option").remove();
+    $("#politicalParty").find("option").remove();
+    $("#electedOfficeForTerritory_Candidate").find("option").remove();
+    $("#distinctOfficeForTerritory_Candidate").find("option").remove();
+    $("#electedOfficeForTerritory_OccupiedOffice").find("option").remove();
+    $("#distinctOfficeForTerritory_OccupiedOffice").find("option").remove();
+
     ////////////////////////////////////////////////////
     //////////// Populate dictionary objects ///////////
     ////////////////////////////////////////////////////
 
     territoryLevelListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/territoryLevel/list/";
-    territoryListUrl = "";
     resultOfCandidacyListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/resultOfCandidacy/list/";
     reasonForEntryListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/reasonForEntry/list/";
     reasonForDepartureListUrl = $("#baseWebServiceUrl").val() + "/ws/dictionary/reasonForDeparture/list/";
