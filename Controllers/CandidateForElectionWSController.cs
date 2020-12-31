@@ -70,9 +70,10 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandGetCandidateForElection.CommandTimeout = 600;
                     sqlCommandGetCandidateForElection.Parameters.Add(new NpgsqlParameter("@candidate_for_election_id", NpgsqlTypes.NpgsqlDbType.Integer));
 
-                    sqlCommandGetCandidateForElection.Parameters["@candidate_for_election_id"].Value = candidateForElectionId;
+                    sqlCommandGetCandidateForElection.Parameters["@candidate_for_election_id"].Value = 0;
                     await sqlCommandGetCandidateForElection.PrepareAsync();
 
+                    sqlCommandGetCandidateForElection.Parameters["@candidate_for_election_id"].Value = candidateForElectionId;
                     using (sqlDataReaderGetCandidateForElection = await sqlCommandGetCandidateForElection.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
                     {
                         if (await sqlDataReaderGetCandidateForElection.ReadAsync())
@@ -172,7 +173,7 @@ namespace Overthink.PolitiScout.Controllers
 
                     using (sqlDataReaderGetCandidateForElectionForPerson = await sqlCommandGetCandidateForElectionForPerson.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
                     {
-                        if (await sqlDataReaderGetCandidateForElectionForPerson.ReadAsync())
+                        while (await sqlDataReaderGetCandidateForElectionForPerson.ReadAsync())
                         {
 
                             returnValue.candidateForElectionId = sqlDataReaderGetCandidateForElectionForPerson.GetInt32(ApplicationValues.CANDIDATE_FOR_ELECTION_LIST_QUERY_RESULT_COLUMN_OFFSET_CANDIDATE_FOR_ELECTION_ID); ;
