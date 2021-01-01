@@ -223,10 +223,113 @@ namespace Overthink.PolitiScout.Controllers
 
         }       // GetCandidateForElectionForPerson()
 
+        [Route("candidateForElection")]
+        [HttpPost]
+        public async Task<ActionResult<Models.CandidateForElection>> AddCandidateForElection([FromBody] Models.CandidateForElection candidateForElection)
+        {
 
-        // Add
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
+
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandInsertCandidateForElection;
+
+            try
+            {
+
+                Models.CandidateForElection returnValue = new Models.CandidateForElection();
+
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("INSERT INTO candidate_for_election ");
+                    sqlStatement.Append("  (person_id, election_for_territory_id, distinct_elected_office_for_territory_id, political_party_id, ");
+                    sqlStatement.Append("   record_added_date_time, record_last_updated_date_time) ");
+                    sqlStatement.Append("  VALUES (@person_id, @election_for_territory_id, @distinct_elected_office_for_territory_id, @political_party_id,");
+                    sqlStatement.Append("          @record_added_date_time, @record_last_updated_date_time) RETURNING candidate_for_election_id ");
+
+                    sqlCommandInsertCandidateForElection = sqlConnection.CreateCommand();
+                    sqlCommandInsertCandidateForElection.CommandText = sqlStatement.ToString();
+                    sqlCommandInsertCandidateForElection.CommandTimeout = 600;
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@election_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@distinct_elected_office_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@political_party_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_added_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+
+                    sqlCommandInsertCandidateForElection.Parameters["@person_id"].Value = 0;
+                    sqlCommandInsertCandidateForElection.Parameters["@election_for_territory_id"].Value = 0;
+                    sqlCommandInsertCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
+                    sqlCommandInsertCandidateForElection.Parameters["@political_party_id"].Value = 0;
+                    sqlCommandInsertCandidateForElection.Parameters["@record_added_date_time"].Value = DateTime.MinValue;
+                    sqlCommandInsertCandidateForElection.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
+                    await sqlCommandInsertCandidateForElection.PrepareAsync();
+
+                    sqlCommandInsertCandidateForElection.Parameters["@person_id"].Value = candidateForElection.personId;
+                    sqlCommandInsertCandidateForElection.Parameters["@election_for_territory_id"].Value = candidateForElection.electionForTerritoryId;
+                    sqlCommandInsertCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = candidateForElection.distinctElectedOfficeForTerritoryId;
+                    sqlCommandInsertCandidateForElection.Parameters["@political_party_id"].Value = candidateForElection.politicalPartyId;
+                    sqlCommandInsertCandidateForElection.Parameters["@record_added_date_time"].Value = processingDateTime;
+                    sqlCommandInsertCandidateForElection.Parameters["@record_last_updated_date_time"].Value = processingDateTime;
+
+                    using (var sqlDataReader = await sqlCommandInsertCandidateForElection.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
+                    {
+                        await sqlDataReader.ReadAsync();
+
+                        returnValue.candidateForElectionId = sqlDataReader.GetInt32(0);
+                        returnValue.personId = candidateForElection.personId;
+                        returnValue.distinctElectedOfficeForTerritoryId = candidateForElection.distinctElectedOfficeForTerritoryId;
+                        returnValue.electionForTerritoryId = candidateForElection.electionForTerritoryId;
+                        returnValue.politicalPartyId = candidateForElection.politicalPartyId;
+
+                        await sqlDataReader.CloseAsync();
+                    };
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in CandidateForElectionWSController::AddCandidateForElection().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // AddCandidateForElection()
+
 
         // Update
+
+
+        /*
+         *     candidate_for_election_id integer NOT NULL,
+            person_id integer NOT NULL,
+            election_for_territory_id integer NOT NULL,
+            distinct_elected_office_for_territory_id integer NOT NULL,
+            political_party_id integer NOT NULL,
+
+         * */
 
         // Delete
 

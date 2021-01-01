@@ -8,6 +8,7 @@ namespace Overthink.PolitiScout.Models
     public class OccupiedElectedOffice
     {
         public int occupiedElectedOfficeId { get; set; }
+        public int personId { get; set; }
         public int territoryLevelId { get; set; }
         public string territoryLevelDescription { get; set; }
         public int territoryId { get; set; }

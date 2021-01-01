@@ -229,5 +229,122 @@ namespace Overthink.PolitiScout.Controllers
         }       // GetOccupiedElectedOfficeForPerson()
 
 
+        [Route("occupiedElectedOffice")]
+        [HttpPost]
+        public async Task<ActionResult<Models.OccupiedElectedOffice>> AddOccupiedElectedOffice([FromBody] Models.OccupiedElectedOffice occupiedElectedOffice)
+        {
+
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
+
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandInsertOccupiedElectedOffice;
+
+            try
+            {
+
+                Models.OccupiedElectedOffice returnValue = new Models.OccupiedElectedOffice();
+
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("INSERT INTO occupied_elected_office ");
+                    sqlStatement.Append("  (person_id, distinct_elected_office_for_territory_id, start_date, end_date, reason_for_entry_id, reason_for_departure_id ");
+                    sqlStatement.Append("   record_added_date_time, record_last_updated_date_time) ");
+                    sqlStatement.Append("  VALUES (@person_id, @distinct_elected_office_for_territory_id, @start_date, @end_date, @reason_for_entry_id, @reason_for_departure_id,");
+                    sqlStatement.Append("          @record_added_date_time, @record_last_updated_date_time) RETURNING occupied_elected_office_id ");
+
+                    sqlCommandInsertOccupiedElectedOffice = sqlConnection.CreateCommand();
+                    sqlCommandInsertOccupiedElectedOffice.CommandText = sqlStatement.ToString();
+                    sqlCommandInsertOccupiedElectedOffice.CommandTimeout = 600;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@distinct_elected_office_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@start_date", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@end_date", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@reason_for_entry_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@reason_for_departure_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@record_added_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandInsertOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@person_id"].Value = 0;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@start_date"].Value = DateTime.MinValue;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@end_date"].Value = DateTime.MinValue;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@reason_for_entry_id"].Value = 0;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@reason_for_departure_id"].Value = 0;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@record_added_date_time"].Value = DateTime.MinValue;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
+                    await sqlCommandInsertOccupiedElectedOffice.PrepareAsync();
+
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@person_id"].Value = occupiedElectedOffice.personId;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@distinct_elected_office_for_territory_id"].Value = occupiedElectedOffice.distinctElectedOfficeForTerritoryId;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@start_date"].Value = occupiedElectedOffice.startDate;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@end_date"].Value = occupiedElectedOffice.endDate;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@reason_for_entry_id"].Value = occupiedElectedOffice.reasonForEntryId;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@reason_for_departure_id"].Value = occupiedElectedOffice.reasonForDepartureId;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@record_added_date_time"].Value = processingDateTime;
+                    sqlCommandInsertOccupiedElectedOffice.Parameters["@record_last_updated_date_time"].Value = processingDateTime;
+
+                    using (var sqlDataReader = await sqlCommandInsertOccupiedElectedOffice.ExecuteReaderAsync(System.Data.CommandBehavior.CloseConnection))
+                    {
+                        await sqlDataReader.ReadAsync();
+
+                        returnValue.occupiedElectedOfficeId = sqlDataReader.GetInt32(0);
+                        returnValue.personId = occupiedElectedOffice.personId;
+                        returnValue.distinctElectedOfficeForTerritoryId = occupiedElectedOffice.distinctElectedOfficeForTerritoryId;
+                        returnValue.startDate = occupiedElectedOffice.startDate;
+                        returnValue.endDate = occupiedElectedOffice.endDate;
+                        returnValue.reasonForEntryId = occupiedElectedOffice.reasonForEntryId;
+                        returnValue.reasonForDepartureId = occupiedElectedOffice.reasonForDepartureId;
+                        await sqlDataReader.CloseAsync();
+                    };
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in OccupiedElectedOfficeWSController::AddOccupiedElectedOffice().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // AddOccupiedElectedOffice()
+
+        /*
+         *     occupied_elected_office_id integer NOT NULL,
+            distinct_elected_office_for_territory_id integer NOT NULL,
+            person_id integer NOT NULL,
+            start_date date NOT NULL,
+            end_date date,
+            reason_for_departure_id integer,
+            reason_for_entry_id integer NOT NULL,
+
+         * */
+
+
+
+
+
     }
 }
