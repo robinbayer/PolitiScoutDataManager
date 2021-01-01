@@ -319,19 +319,161 @@ namespace Overthink.PolitiScout.Controllers
         }       // AddCandidateForElection()
 
 
-        // Update
+        [Route("candidateForElection")]
+        [HttpPut]
+        public async Task<ActionResult<Models.CandidateForElection>> UpdateCandidateForElection([FromBody] Models.CandidateForElection candidateForElection)
+        {
 
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
 
-        /*
-         *     candidate_for_election_id integer NOT NULL,
-            person_id integer NOT NULL,
-            election_for_territory_id integer NOT NULL,
-            distinct_elected_office_for_territory_id integer NOT NULL,
-            political_party_id integer NOT NULL,
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandUpdateCandidateForElection;
 
-         * */
+            try
+            {
 
-        // Delete
+                Models.CandidateForElection returnValue = new Models.CandidateForElection();
+
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("UPDATE candidate_for_election ");
+                    sqlStatement.Append("  SET person_id = @person_id, election_for_territory_id = @election_for_territory_id, ");
+                    sqlStatement.Append("      distinct_elected_office_for_territory_id = @distinct_elected_office_for_territory_id, ");
+                    sqlStatement.Append("      political_party_id = @political_party_id, record_last_updated_date_time = @record_last_updated_date_time ");
+                    sqlStatement.Append("  VALUES (@person_id, @election_for_territory_id, @distinct_elected_office_for_territory_id, @political_party_id,");
+                    sqlStatement.Append("  WHERE candidate_for_election_id = @candidate_for_election_id ");
+
+                    sqlCommandUpdateCandidateForElection = sqlConnection.CreateCommand();
+                    sqlCommandUpdateCandidateForElection.CommandText = sqlStatement.ToString();
+                    sqlCommandUpdateCandidateForElection.CommandTimeout = 600;
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@election_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@distinct_elected_office_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@political_party_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_added_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+
+                    sqlCommandUpdateCandidateForElection.Parameters["@person_id"].Value = 0;
+                    sqlCommandUpdateCandidateForElection.Parameters["@election_for_territory_id"].Value = 0;
+                    sqlCommandUpdateCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
+                    sqlCommandUpdateCandidateForElection.Parameters["@political_party_id"].Value = 0;
+                    sqlCommandUpdateCandidateForElection.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
+                    sqlCommandUpdateCandidateForElection.Parameters["@candidate_for_election_id"].Value = 0;
+                    await sqlCommandUpdateCandidateForElection.PrepareAsync();
+
+                    sqlCommandUpdateCandidateForElection.Parameters["@person_id"].Value = candidateForElection.personId;
+                    sqlCommandUpdateCandidateForElection.Parameters["@election_for_territory_id"].Value = candidateForElection.electionForTerritoryId;
+                    sqlCommandUpdateCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = candidateForElection.distinctElectedOfficeForTerritoryId;
+                    sqlCommandUpdateCandidateForElection.Parameters["@political_party_id"].Value = candidateForElection.politicalPartyId;
+                    sqlCommandUpdateCandidateForElection.Parameters["@record_last_updated_date_time"].Value = processingDateTime;
+                    sqlCommandUpdateCandidateForElection.Parameters["@candidate_for_election_id"].Value = candidateForElection.candidateForElectionId;
+
+                    await sqlCommandUpdateCandidateForElection.ExecuteNonQueryAsync();
+
+                    returnValue.candidateForElectionId = candidateForElection.candidateForElectionId;
+                    returnValue.personId = candidateForElection.personId;
+                    returnValue.distinctElectedOfficeForTerritoryId = candidateForElection.distinctElectedOfficeForTerritoryId;
+                    returnValue.electionForTerritoryId = candidateForElection.electionForTerritoryId;
+                    returnValue.politicalPartyId = candidateForElection.politicalPartyId;
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in CandidateForElectionWSController::UpdateCandidateForElection().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // UpdateCandidateForElection()
+
+        [Route("candidateForElection/{candidateForElectionId}/")]
+        [HttpDelete]
+        public async Task<ActionResult<Models.APICallResult>> DeleteCandidateForElection(int candidateForElectionId)
+        {
+
+            System.Text.StringBuilder sqlStatement;
+
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandDeleteCandidateForElection;
+
+            try
+            {
+
+                Models.APICallResult returnValue = new Models.APICallResult();
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("DELETE FROM candidate_for_election ");
+                    sqlStatement.Append("  WHERE candidate_for_election_id = @candidate_for_election_id ");
+
+                    sqlCommandDeleteCandidateForElection = sqlConnection.CreateCommand();
+                    sqlCommandDeleteCandidateForElection.CommandText = sqlStatement.ToString();
+                    sqlCommandDeleteCandidateForElection.CommandTimeout = 600;
+                    sqlCommandDeleteCandidateForElection.Parameters.Add(new NpgsqlParameter("@candidate_for_election_id", NpgsqlTypes.NpgsqlDbType.Integer));
+
+                    sqlCommandDeleteCandidateForElection.Parameters["@candidate_for_election_id"].Value = 0;
+                    await sqlCommandDeleteCandidateForElection.PrepareAsync();
+
+                    sqlCommandDeleteCandidateForElection.Parameters["@candidate_for_election_id"].Value = candidateForElectionId;
+
+                    await sqlCommandDeleteCandidateForElection.ExecuteNonQueryAsync();
+
+                    returnValue.resultCode = Models.APICallResult.RESULT_CODE_SUCCESS;
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in CandidateForElectionWSController::DeleteCandidateForElection().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // DeleteCandidateForElection()
 
     }
 }

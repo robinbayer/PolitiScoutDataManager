@@ -549,6 +549,5 @@ namespace Overthink.PolitiScout.Controllers
 
         }       // DeletePerson()
 
-
     }
 }

@@ -228,7 +228,6 @@ namespace Overthink.PolitiScout.Controllers
 
         }       // GetOccupiedElectedOfficeForPerson()
 
-
         [Route("occupiedElectedOffice")]
         [HttpPost]
         public async Task<ActionResult<Models.OccupiedElectedOffice>> AddOccupiedElectedOffice([FromBody] Models.OccupiedElectedOffice occupiedElectedOffice)
@@ -331,20 +330,171 @@ namespace Overthink.PolitiScout.Controllers
 
         }       // AddOccupiedElectedOffice()
 
-        /*
-         *     occupied_elected_office_id integer NOT NULL,
-            distinct_elected_office_for_territory_id integer NOT NULL,
-            person_id integer NOT NULL,
-            start_date date NOT NULL,
-            end_date date,
-            reason_for_departure_id integer,
-            reason_for_entry_id integer NOT NULL,
 
-         * */
+        [Route("occupiedElectedOffice")]
+        [HttpPut]
+        public async Task<ActionResult<Models.OccupiedElectedOffice>> UpdateOccupiedElectedOffice([FromBody] Models.OccupiedElectedOffice occupiedElectedOffice)
+        {
+
+            System.Text.StringBuilder sqlStatement;
+            DateTime processingDateTime;
+
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandUpdateOccupiedElectedOffice;
+
+            try
+            {
+
+                Models.OccupiedElectedOffice returnValue = new Models.OccupiedElectedOffice();
+
+                processingDateTime = System.DateTime.Now;
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("UPDATE occupied_elected_office ");
+                    sqlStatement.Append("  SET person_id = @person_id, distinct_elected_office_for_territory_id = distinct_elected_office_for_territory_id, ");
+                    sqlStatement.Append("      start_date = @start_date, end_date = @end_date, reason_for_entry_id = @reason_for_entry_id, ");
+                    sqlStatement.Append("      reason_for_departure_id = @reason_for_departure_id, record_last_updated_date_time = @record_last_updated_date_time ");
+                    sqlStatement.Append("  WHERE occupied_elected_office_id = @occupied_elected_office_id ");
+
+                    sqlCommandUpdateOccupiedElectedOffice = sqlConnection.CreateCommand();
+                    sqlCommandUpdateOccupiedElectedOffice.CommandText = sqlStatement.ToString();
+                    sqlCommandUpdateOccupiedElectedOffice.CommandTimeout = 600;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@distinct_elected_office_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@start_date", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@end_date", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@reason_for_entry_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@reason_for_departure_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@person_id", NpgsqlTypes.NpgsqlDbType.Integer));
+
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@person_id"].Value = 0;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@start_date"].Value = DateTime.MinValue;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@end_date"].Value = DateTime.MinValue;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@reason_for_entry_id"].Value = 0;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@reason_for_departure_id"].Value = 0;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@occupied_elected_office_id"].Value = 0;
+                    await sqlCommandUpdateOccupiedElectedOffice.PrepareAsync();
+
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@person_id"].Value = occupiedElectedOffice.personId;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@distinct_elected_office_for_territory_id"].Value = occupiedElectedOffice.distinctElectedOfficeForTerritoryId;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@start_date"].Value = occupiedElectedOffice.startDate;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@end_date"].Value = occupiedElectedOffice.endDate;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@reason_for_entry_id"].Value = occupiedElectedOffice.reasonForEntryId;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@reason_for_departure_id"].Value = occupiedElectedOffice.reasonForDepartureId;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@record_added_date_time"].Value = processingDateTime;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@record_last_updated_date_time"].Value = processingDateTime;
+                    sqlCommandUpdateOccupiedElectedOffice.Parameters["@occupied_elected_office_id"].Value = occupiedElectedOffice.occupiedElectedOfficeId;
+
+                    await sqlCommandUpdateOccupiedElectedOffice.ExecuteNonQueryAsync();
+
+                    returnValue.occupiedElectedOfficeId = occupiedElectedOffice.occupiedElectedOfficeId;
+                    returnValue.personId = occupiedElectedOffice.personId;
+                    returnValue.distinctElectedOfficeForTerritoryId = occupiedElectedOffice.distinctElectedOfficeForTerritoryId;
+                    returnValue.startDate = occupiedElectedOffice.startDate;
+                    returnValue.endDate = occupiedElectedOffice.endDate;
+                    returnValue.reasonForEntryId = occupiedElectedOffice.reasonForEntryId;
+                    returnValue.reasonForDepartureId = occupiedElectedOffice.reasonForDepartureId;
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in OccupiedElectedOfficeWSController::UpdateOccupiedElectedOffice().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // UpdateOccupiedElectedOffice()
 
 
+        [Route("occupiedElectedOffice/{occupiedElectedOfficeId}/")]
+        [HttpDelete]
+        public async Task<ActionResult<Models.APICallResult>> DeleteOccupiedElectedOffice(int occupiedElectedOfficeId)
+        {
 
+            System.Text.StringBuilder sqlStatement;
 
+            NpgsqlConnection sqlConnection;
+            NpgsqlCommand sqlCommandDeleteOccupiedElectedOffice;
+
+            try
+            {
+
+                Models.APICallResult returnValue = new Models.APICallResult();
+
+                using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    sqlStatement = new System.Text.StringBuilder();
+                    sqlStatement.Append("DELETE FROM occupied_elected_office ");
+                    sqlStatement.Append("  WHERE occupied_elected_office_id = @occupied_elected_office_id ");
+
+                    sqlCommandDeleteOccupiedElectedOffice = sqlConnection.CreateCommand();
+                    sqlCommandDeleteOccupiedElectedOffice.CommandText = sqlStatement.ToString();
+                    sqlCommandDeleteOccupiedElectedOffice.CommandTimeout = 600;
+                    sqlCommandDeleteOccupiedElectedOffice.Parameters.Add(new NpgsqlParameter("@occupied_elected_office_id", NpgsqlTypes.NpgsqlDbType.Integer));
+
+                    sqlCommandDeleteOccupiedElectedOffice.Parameters["@occupied_elected_office_id"].Value = 0;
+                    await sqlCommandDeleteOccupiedElectedOffice.PrepareAsync();
+
+                    sqlCommandDeleteOccupiedElectedOffice.Parameters["@occupied_elected_office_id"].Value = occupiedElectedOfficeId;
+
+                    await sqlCommandDeleteOccupiedElectedOffice.ExecuteNonQueryAsync();
+
+                    returnValue.resultCode = Models.APICallResult.RESULT_CODE_SUCCESS;
+
+                    await sqlConnection.CloseAsync();
+                }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))
+
+                return Ok(returnValue);
+
+            }
+            catch (Exception ex1)
+            {
+                logger.LogError(string.Format("Unhandled exception occurred in OccupiedElectedOfficeWSController::DeleteOccupiedElectedOffice().  Message is {0}", ex1.Message));
+
+                if (ex1.InnerException != null)
+                {
+                    logger.LogError(string.Format("  -- Inner exception message is {0}", ex1.InnerException.Message));
+
+                    if (ex1.InnerException.InnerException != null)
+                    {
+                        logger.LogError(string.Format("  -- --  Inner exception message is {0}", ex1.InnerException.InnerException.Message));
+                    }
+
+                }
+
+                logger.LogError(string.Format("{0}", ex1.StackTrace));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex1.Message);
+            }
+
+        }       // DeleteOccupiedElectedOffice()
 
     }
 }
