@@ -248,7 +248,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlStatement = new System.Text.StringBuilder();
                     sqlStatement.Append("INSERT INTO candidate_for_election ");
                     sqlStatement.Append("  (person_id, election_for_territory_id, distinct_elected_office_for_territory_id, political_party_id, ");
-                    sqlStatement.Append("   record_added_date_time, record_last_updated_date_time) ");
+                    sqlStatement.Append("   result_of_candidacy_id, record_added_date_time, record_last_updated_date_time) ");
                     sqlStatement.Append("  VALUES (@person_id, @election_for_territory_id, @distinct_elected_office_for_territory_id, @political_party_id,");
                     sqlStatement.Append("          @record_added_date_time, @record_last_updated_date_time) RETURNING candidate_for_election_id ");
 
@@ -259,6 +259,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@election_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
                     sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@distinct_elected_office_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
                     sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@political_party_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@result_of_candidacy_id", NpgsqlTypes.NpgsqlDbType.Integer));
                     sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_added_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
                     sqlCommandInsertCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
 
@@ -266,6 +267,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandInsertCandidateForElection.Parameters["@election_for_territory_id"].Value = 0;
                     sqlCommandInsertCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
                     sqlCommandInsertCandidateForElection.Parameters["@political_party_id"].Value = 0;
+                    sqlCommandInsertCandidateForElection.Parameters["@result_of_candidacy_id"].Value = 0;
                     sqlCommandInsertCandidateForElection.Parameters["@record_added_date_time"].Value = DateTime.MinValue;
                     sqlCommandInsertCandidateForElection.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
                     await sqlCommandInsertCandidateForElection.PrepareAsync();
@@ -274,6 +276,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandInsertCandidateForElection.Parameters["@election_for_territory_id"].Value = candidateForElection.electionForTerritoryId;
                     sqlCommandInsertCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = candidateForElection.distinctElectedOfficeForTerritoryId;
                     sqlCommandInsertCandidateForElection.Parameters["@political_party_id"].Value = candidateForElection.politicalPartyId;
+                    sqlCommandInsertCandidateForElection.Parameters["@result_of_candidacy_id"].Value = candidateForElection.resultOfCandidacyId;
                     sqlCommandInsertCandidateForElection.Parameters["@record_added_date_time"].Value = processingDateTime;
                     sqlCommandInsertCandidateForElection.Parameters["@record_last_updated_date_time"].Value = processingDateTime;
 
@@ -286,6 +289,7 @@ namespace Overthink.PolitiScout.Controllers
                         returnValue.distinctElectedOfficeForTerritoryId = candidateForElection.distinctElectedOfficeForTerritoryId;
                         returnValue.electionForTerritoryId = candidateForElection.electionForTerritoryId;
                         returnValue.politicalPartyId = candidateForElection.politicalPartyId;
+                        returnValue.resultOfCandidacyId = candidateForElection.resultOfCandidacyId;
 
                         await sqlDataReader.CloseAsync();
                     };
@@ -345,8 +349,8 @@ namespace Overthink.PolitiScout.Controllers
                     sqlStatement.Append("UPDATE candidate_for_election ");
                     sqlStatement.Append("  SET person_id = @person_id, election_for_territory_id = @election_for_territory_id, ");
                     sqlStatement.Append("      distinct_elected_office_for_territory_id = @distinct_elected_office_for_territory_id, ");
-                    sqlStatement.Append("      political_party_id = @political_party_id, record_last_updated_date_time = @record_last_updated_date_time ");
-                    sqlStatement.Append("  VALUES (@person_id, @election_for_territory_id, @distinct_elected_office_for_territory_id, @political_party_id,");
+                    sqlStatement.Append("      political_party_id = @political_party_id, result_of_candidacy_id = @result_of_candidacy_id, ");
+                    sqlStatement.Append("      record_last_updated_date_time = @record_last_updated_date_time ");
                     sqlStatement.Append("  WHERE candidate_for_election_id = @candidate_for_election_id ");
 
                     sqlCommandUpdateCandidateForElection = sqlConnection.CreateCommand();
@@ -356,6 +360,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@election_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
                     sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@distinct_elected_office_for_territory_id", NpgsqlTypes.NpgsqlDbType.Integer));
                     sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@political_party_id", NpgsqlTypes.NpgsqlDbType.Integer));
+                    sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@result_of_candidacy_id", NpgsqlTypes.NpgsqlDbType.Integer));
                     sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_added_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
                     sqlCommandUpdateCandidateForElection.Parameters.Add(new NpgsqlParameter("@record_last_updated_date_time", NpgsqlTypes.NpgsqlDbType.Timestamp));
 
@@ -363,6 +368,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandUpdateCandidateForElection.Parameters["@election_for_territory_id"].Value = 0;
                     sqlCommandUpdateCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = 0;
                     sqlCommandUpdateCandidateForElection.Parameters["@political_party_id"].Value = 0;
+                    sqlCommandUpdateCandidateForElection.Parameters["@result_of_candidacy_id"].Value = 0;
                     sqlCommandUpdateCandidateForElection.Parameters["@record_last_updated_date_time"].Value = DateTime.MinValue;
                     sqlCommandUpdateCandidateForElection.Parameters["@candidate_for_election_id"].Value = 0;
                     await sqlCommandUpdateCandidateForElection.PrepareAsync();
@@ -371,6 +377,7 @@ namespace Overthink.PolitiScout.Controllers
                     sqlCommandUpdateCandidateForElection.Parameters["@election_for_territory_id"].Value = candidateForElection.electionForTerritoryId;
                     sqlCommandUpdateCandidateForElection.Parameters["@distinct_elected_office_for_territory_id"].Value = candidateForElection.distinctElectedOfficeForTerritoryId;
                     sqlCommandUpdateCandidateForElection.Parameters["@political_party_id"].Value = candidateForElection.politicalPartyId;
+                    sqlCommandUpdateCandidateForElection.Parameters["@result_of_candidacy_id"].Value = candidateForElection.resultOfCandidacyId;
                     sqlCommandUpdateCandidateForElection.Parameters["@record_last_updated_date_time"].Value = processingDateTime;
                     sqlCommandUpdateCandidateForElection.Parameters["@candidate_for_election_id"].Value = candidateForElection.candidateForElectionId;
 
@@ -381,6 +388,7 @@ namespace Overthink.PolitiScout.Controllers
                     returnValue.distinctElectedOfficeForTerritoryId = candidateForElection.distinctElectedOfficeForTerritoryId;
                     returnValue.electionForTerritoryId = candidateForElection.electionForTerritoryId;
                     returnValue.politicalPartyId = candidateForElection.politicalPartyId;
+                    returnValue.resultOfCandidacyId = candidateForElection.resultOfCandidacyId;
 
                     await sqlConnection.CloseAsync();
                 }       // using (sqlConnection = new NpgsqlConnection(configuration["ConnectionStrings:PolitiScout"]))

@@ -232,7 +232,7 @@ $(function () {
 
                 var option = $("<option />");
                 option.val(element.politicalPartyId);
-                option.html(element.referenceName);
+                option.html(element.referenceName + "(" + element.abbreviation + ")");
                 politicalParty.append(option);
 
             });
@@ -290,7 +290,7 @@ $(function () {
         scrollrows: true,
         height: 200,
         rowNum: 5000,
-        colNames: ['Person ID', 'Last Name', 'First Name', 'Preferred First Name','Middle Name', 'Date of Birth'],
+        colNames: ['Person ID', 'Last Name', 'First Name', 'Preferred First Name', 'Middle Name', 'Date of Birth'],
         colModel: [
             {
                 name: 'personId',
@@ -383,6 +383,12 @@ $(function () {
                 $("#addCandidateForElection").removeAttr("disabled");
                 $("#addOccupiedElectedOffice").removeAttr("disabled");
 
+                candidateForElectionGridUrl = $("#baseWebServiceUrl").val() + "/ws/candidateForElection/forPerson/" + rowId + "/";
+                $("#candidateForElectionGrid").jqGrid('setGridParam', { url: candidateForElectionGridUrl }).trigger("reloadGrid");
+
+                occupiedElectedOfficesGridUrl = $("#baseWebServiceUrl").val() + "/ws/occupiedElectedOffice/forPerson/" + rowId + "/";
+                $("#occupiedElectedOfficeGrid").jqGrid('setGridParam', { url: occupiedElectedOfficesGridUrl }).trigger("reloadGrid");
+
             }       // left-click
         }       // onSelectRow event
 
@@ -461,12 +467,12 @@ $(function () {
                 },
                 error: function (e) {
 
-                    $("#errorMessageBlock").show();
-                    $("#errorMessageText").html("An error occured during web service call to update Person information");
+                    $("#errorMessageBlock_Person").show();
+                    $("#errorMessageText_Person").html("An error occured during web service call to update Person information");
                     setTimeout(function () {
 
-                        $("#errorMessageText").html("");
-                        $("#errorMessageBlock").hide();
+                        $("#errorMessageText_Person").html("");
+                        $("#errorMessageBlock_Person").hide();
 
                     }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
 
@@ -506,12 +512,12 @@ $(function () {
                 },
                 error: function (e) {
 
-                    $("#errorMessageBlock").show();
-                    $("#errorMessageText").html("An error occured during web service call to update Person information");
+                    $("#errorMessageBlock_Person").show();
+                    $("#errorMessageText_Person").html("An error occured during web service call to update Person information");
                     setTimeout(function () {
 
-                        $("#errorMessageText").html("");
-                        $("#errorMessageBlock").hide();
+                        $("#errorMessageText_Person").html("");
+                        $("#errorMessageBlock_Person").hide();
 
                     }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
 
@@ -532,19 +538,19 @@ $(function () {
         if (event.keyCode === 13) {
             $("#searchForPerson").click();
         }
-    }); 
+    });
 
     $("#firstNameSearchMask").keypress(function (event) {
         if (event.keyCode === 13) {
             $("#searchForPerson").click();
         }
-    }); 
+    });
 
     $("#preferredFirstNameSearchMask").keypress(function (event) {
         if (event.keyCode === 13) {
             $("#searchForPerson").click();
         }
-    }); 
+    });
 
     $("#searchForPerson").click(function () {
 
@@ -557,7 +563,7 @@ $(function () {
         gridPostData.firstNameSearchMask = $("#firstNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
         gridPostData.preferredFirstNameSearchMask = $("#preferredFirstNameSearchMask").val().toUpperCase() + WILDCARD_ALL_TOKEN;
 
-        $("#personSearchResultGrid").jqGrid('setGridParam', { url: personSearchResultGridUrl}).trigger("reloadGrid");
+        $("#personSearchResultGrid").jqGrid('setGridParam', { url: personSearchResultGridUrl }).trigger("reloadGrid");
 
     });     // $("#searchForPerson").click()
 
@@ -608,12 +614,12 @@ $(function () {
             },
             error: function (jqXHR, textStatus, errorThrown) {
 
-                $("#errorMessageBlock").show();
-                $("#errorMessageText").html("An error occured during web service call to populate Person information");
+                $("#errorMessageBlock_Person").show();
+                $("#errorMessageText_Person").html("An error occured during web service call to populate Person information");
                 setTimeout(function () {
 
-                    $("#errorMessageText").html("");
-                    $("#errorMessageBlock").hide();
+                    $("#errorMessageText_Person").html("");
+                    $("#errorMessageBlock_Person").hide();
 
                 }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
 
@@ -655,8 +661,8 @@ $(function () {
             },
             error: function (jqXHR, textStatus, errorThrown) {
 
-                $("#errorMessageBlock").show();
-                $("#errorMessageText").html("An error occured during web service call to delete Person information");
+                $("#errorMessageBlock_Person").show();
+                $("#errorMessageText_Person").html("An error occured during web service call to delete Person information");
                 setTimeout(function () {
 
                     $("#errorMessageText").html("");
@@ -670,7 +676,7 @@ $(function () {
     });     // $("#onDialogDeletePerson").click()
 
     $("#candidateForElectionGrid").jqGrid({
-        url: personSearchResultGridUrl,
+        url: candidateForElectionGridUrl,
         type: 'GET',
         ajaxGridOptions: {
             contentType: 'application/json; charset=utf-8',
@@ -786,9 +792,10 @@ $(function () {
 
     $("#addCandidateForElection").click(function () {
 
-        /*
         $("#screenMode").val(SCREEN_MODE_ADD);
-        $("#addEditPersonModalLabel").text(SCREEN_MODE_ADD + " Person record");
+        $("#addEditCandidateForElectionModalLabel").text(SCREEN_MODE_ADD + " Candidate for Election record");
+
+        /*
 
         $("#lastName").val("");
         $("#firstName").val("");
@@ -796,35 +803,34 @@ $(function () {
         $("#preferredFirstName").val("");
         $("#generationSuffix").val("");
         $("#dateOfBirth").val("");
-
-        $("#addEditPersonModal").modal("show");
         */
 
-    /*
-     *         public int candidateForElectionId { get; set; }
-            public int territoryLevelId { get; set; }
-            public string territoryLevelDescription { get; set; }
-            public int territoryId { get; set; }
-            public string territoryDescription { get; set; }
-            public string electedOfficeDescription { get; set; }
-            public int distinctElectedOfficeForTerritoryId { get; set; }
-            public string distinctOfficeDesignator { get; set; }
-            public DateTime electionDate { get; set; }
-            public int politicalPartyId { get; set; }
-            public string politicalPartyDescription { get; set; }
-            public int resultOfCandidacyId { get; set; }
-            public int resultOfCandidacyDescription { get; set; }
+        $("#addEditCandidateForElectionModal").modal("show");
 
-    
-     * */
+        /*
+         * 
+        candidate_for_election_id integer NOT NULL,
+        person_id integer NOT NULL,
+        election_for_territory_id integer NOT NULL,
+        distinct_elected_office_for_territory_id integer NOT NULL,
+        political_party_id integer NOT NULL,
+        record_added_date_time date NOT NULL,
+        record_last_updated_date_time date NOT NULL,
+         *
+            public int personId { get; set; }
+            public int electionForTerritoryId { get; set; }
+            public int distinctElectedOfficeForTerritoryId { get; set; }
+            public int politicalPartyId { get; set; }
+            public int resultOfCandidacyId { get; set; }
+        
+         * */
 
 
     });     // $("#addCandidateForElection").click()
 
     $("#editCandidateForElection").click(function () {
 
-        /*
-        var personInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/" + $("#selectedPersonId").val() + "/";
+        var candidateForElectionInformationUrl = $("#baseWebServiceUrl").val() + "/ws/candidateForElection/" + $("#selectedCandidateForElectionId").val() + "/";
 
         $.ajax({
             type: "GET",
@@ -833,6 +839,7 @@ $(function () {
             dataType: "json",
             success: function (returnValue) {
 
+                /*
                 // Load existing values from database into controls
                 $("#lastName").val(returnValue.lastName);
                 $("#firstName").val(returnValue.firstName);
@@ -844,29 +851,147 @@ $(function () {
                     // Format date of birth to YYYY-MM-DD
                     $("#dateOfBirth").val(returnValue.dateOfBirth.substring(0, 10));
                 }
+                */
 
                 $("#screenMode").val(SCREEN_MODE_EDIT);
-                $("#addEditPersonModalLabel").text(SCREEN_MODE_EDIT + " Person record");
+                $("#addEditCandidateForElectionModalLabel").text(SCREEN_MODE_EDIT + " Candidate for Election record");
 
-                $("#addEditPersonModal").modal("show");
+                $("#addEditCandidateForElectionModal").modal("show");
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
 
-                $("#errorMessageBlock").show();
-                $("#errorMessageText").html("An error occured during web service call to populate Person information");
+                $("#errorMessageBlock_CandidateForElection").show();
+                $("#errorMessageText_CandidateForElection").html("An error occured during web service call to populate Candidate for Election information");
                 setTimeout(function () {
 
-                    $("#errorMessageText").html("");
-                    $("#errorMessageBlock").hide();
+                    $("#errorMessageText_CandidateForElection").html("");
+                    $("#errorMessageBlock_CandidateForElection").hide();
 
                 }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
 
             }
         });        // .ajax()
-        */
 
     });     // $("editCandidateForElection").click()
+
+
+
+    $("#okOnAddEditCandidateForElectionModal").click(function () {
+
+        // Perform validations
+        $("#dialogErrorMessageBlock_CandidateForElection").hide();
+
+        if ($("#lastName").val() == "") {
+            $("#dialogErrorMessageText_CandidateForElection").html("A Last Name must be specified.");
+            $("#lastName").focus();
+            $("#dialogErrorMessageBlock_CandidateForElection").show();
+            return;
+        }
+
+
+        /*
+         *
+         * public int candidateForElectionId { get; set; }
+                public int personId { get; set; }
+                public int territoryLevelId { get; set; }
+                public string territoryLevelDescription { get; set; }
+                public int territoryId { get; set; }
+                public string territoryFullName { get; set; }
+                public string electedOfficeDescription { get; set; }
+                public int distinctElectedOfficeForTerritoryId { get; set; }
+                public string distinctOfficeDesignator { get; set; }
+                public int electionForTerritoryId { get; set; }
+                public DateTime electionDate { get; set; }
+                public int politicalPartyId { get; set; }
+                public string politicalPartyReferenceName { get; set; }
+                public int resultOfCandidacyId { get; set; }
+                public string resultOfCandidacyDescription { get; set; }
+        
+         * */
+
+
+        var candidateForElection = new Object();
+
+        //candidateForElection....... = $("#firstName").val();
+
+
+        if ($("#screenMode").val() == SCREEN_MODE_ADD) {
+
+            var addCandidateForElectionInformationUrl = $("#baseWebServiceUrl").val() + "/ws/candidateForElection/";
+
+            $.ajax({
+                type: "POST",
+                url: addCandidateForElectionInformationUrl,
+                traditional: true,
+                data: JSON.stringify(person),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (returnValue) {
+
+                    candidateForElectionGridUrl = $("#baseWebServiceUrl").val() + "/ws/candidateForElection/forPerson/" + $("#selectedPersonId").val() + "/";
+                    $("#candidateForElectionGrid").jqGrid('setGridParam', { url: candidateForElectionGridUrl }).trigger("reloadGrid");
+
+                },
+                error: function (e) {
+
+                    $("#errorMessageBlock_CandidateForElection").show();
+                    $("#errorMessageText_CandidateForElection").html("An error occured during web service call to add Candidate for Election information");
+                    setTimeout(function () {
+
+                        $("#errorMessageText_CandidateForElection").html("");
+                        $("#errorMessageBlock_CandidateForElection").hide();
+
+                    }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+                }
+            });     // .ajax()
+
+
+        } else {
+
+            candidateForElection.candidateForElectionId = parseInt($("#selectedCandidateForElectionId").val());
+
+            // Edit mode
+            var updateCandidateForElectionInformationUrl = $("#baseWebServiceUrl").val() + "/ws/candidateForElection/";
+
+            $.ajax({
+                type: "PUT",
+                url: updateCandidateForElectionInformationUrl,
+                traditional: true,
+                data: JSON.stringify(candidateForElection),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (returnValue) {
+
+                    candidateForElectionGridUrl = $("#baseWebServiceUrl").val() + "/ws/candidateForElection/forPerson/" + $("#selectedPersonId").val() + "/";
+                    $("#candidateForElectionGrid").jqGrid('setGridParam', { url: candidateForElectionGridUrl }).trigger("reloadGrid");
+
+                },
+                error: function (e) {
+
+                    $("#errorMessageBlock").show();
+                    $("#errorMessageText").html("An error occured during web service call to update Person information");
+                    setTimeout(function () {
+
+                        $("#errorMessageText_CandidateForElection").html("");
+                        $("#errorMessageBlock_CandidateForElection").hide();
+
+                    }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
+
+                }
+            });     // .ajax()
+
+        }
+
+        $("#addEditCandidateForElection").modal("hide");
+
+        if ($("#screenMode").val() == SCREEN_MODE_ADD) {
+            $("#addCandidateForElection").focus();
+        }
+
+    });
+
 
     $("#occupiedElectedOfficeGrid").jqGrid({
         url: occupiedElectedOfficesGridUrl,
@@ -1010,91 +1135,96 @@ $(function () {
         /*
         $("#screenMode").val(SCREEN_MODE_ADD);
         $("#addEditPersonModalLabel").text(SCREEN_MODE_ADD + " Person record");
-
+    
         $("#lastName").val("");
         $("#firstName").val("");
         $("#middleName").val("");
         $("#preferredFirstName").val("");
         $("#generationSuffix").val("");
         $("#dateOfBirth").val("");
-
+    
         $("#addEditPersonModal").modal("show");
         */
 
 
-    /*
+        /*
+    
             public int occupiedElectedOfficeId { get; set; }
-            public int territoryLevelId { get; set; }
-            public string territoryLevelDescription { get; set; }
-            public int territoryId { get; set; }
-            public string territoryDescription { get; set; }
-            public string electedOfficeDescription { get; set; }
+            public int personId { get; set; }
             public int distinctElectedOfficeForTerritoryId { get; set; }
-            public string distinctOfficeDesignator { get; set; }
+            public DateTime startDate { get; set; }
+            public DateTime endDate { get; set; }
             public int reasonForEntryId { get; set; }
-            public int reasonForEntryDescription { get; set; }
             public int reasonForDepartureId { get; set; }
-            public int reasonForDepartureDescription { get; set; }
-     *
-     * */
+         *
+         * */
 
     });     // $("#addOccupiedElectedOffice").click()
 
     $("#editOccupiedElectedOffice").click(function () {
 
+
+        /*
+    
+            public int occupiedElectedOfficeId { get; set; }
+            public int personId { get; set; }
+            public int distinctElectedOfficeForTerritoryId { get; set; }
+            public DateTime startDate { get; set; }
+            public DateTime endDate { get; set; }
+            public int reasonForEntryId { get; set; }
+            public int reasonForDepartureId { get; set; }
+         *
+         * */
+
+
         /*
         var personInformationUrl = $("#baseWebServiceUrl").val() + "/ws/person/" + $("#selectedPersonId").val() + "/";
-
-
-
-
+    
+    
+    
+    
         $.ajax({
             type: "GET",
             url: personInformationUrl,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (returnValue) {
-
+    
+    
+    
                 // Load existing values from database into controls
                 $("#lastName").val(returnValue.lastName);
                 $("#firstName").val(returnValue.firstName);
                 $("#middleName").val(returnValue.middleName);
                 $("#preferredFirstName").val(returnValue.preferredFirstName);
                 $("#generationSuffix").val(returnValue.generationSuffix);
-
+    
                 if (returnValue.dateOfBirth != "0001-01-01T00:00:00") {
                     // Format date of birth to YYYY-MM-DD
                     $("#dateOfBirth").val(returnValue.dateOfBirth.substring(0, 10));
                 }
-
+    
                 $("#screenMode").val(SCREEN_MODE_EDIT);
                 $("#addEditPersonModalLabel").text(SCREEN_MODE_EDIT + " Person record");
-
+    
                 $("#addEditPersonModal").modal("show");
-
+    
             },
             error: function (jqXHR, textStatus, errorThrown) {
-
+    
                 $("#errorMessageBlock").show();
                 $("#errorMessageText").html("An error occured during web service call to populate Person information");
                 setTimeout(function () {
-
+    
                     $("#errorMessageText").html("");
                     $("#errorMessageBlock").hide();
-
+    
                 }, ERROR_MESSAGE_AUTO_DISMISS_MILLISECONDS);
-
+    
             }
         });        // .ajax()
         */
 
     });     // $("editOccupiedElectedOffice").click()
 
-
-
-
 });     // // document.ready()
-
-
-
-
